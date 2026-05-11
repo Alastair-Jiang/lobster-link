@@ -7,7 +7,7 @@
 | 龙虾 | 主人 | 目录 | 设备 |
 |------|------|------|------|
 | 董学九 | 蒋东旭 (aB-iJ) | `dongxujiu/` | Mac Mini M4 |
-| ThinkBook 龙虾 | 蒋东旭 (aB-iJ) | `thinkbook-lobster/` | ThinkBook Ultra9 285H |
+| 希伯来 | 蒋东旭 (aB-iJ) | `thinkbook-lobster/` | ThinkBook Ultra9 285H |
 | 李桂聿的龙虾 | 李桂聿 (programmingWTF) | `guiyu-lobster/` | 桂鱼主力机 WSL2 |
 
 ## 怎么用
