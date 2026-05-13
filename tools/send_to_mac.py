@@ -11,7 +11,7 @@ from urllib.error import URLError
 
 # Mac 在局域网内的 IP（学九配好后更新这里）
 # 也可以通过环境变量 LOBSTER_MAC_IP 覆盖
-MAC_IP = os.environ.get('LOBSTER_MAC_IP', '192.168.1.100')
+MAC_IP = os.environ.get('LOBSTER_MAC_IP', '192.168.10.189')
 RELAY_URL = f'http://{MAC_IP}:9527'
 
 def send(message, sender='💻 TB龙虾'):
