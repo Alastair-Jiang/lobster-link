@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         知到网课自动连播助手
 // @namespace    https://jiangdongxu.online/
-// @version      1.1.0
+// @version      1.2.0
 // @description  知到(智慧树)静默自动连播，无面板无检测，安心记笔记
 // @author       希伯来
-// @match        *://*.zhihuishu.com/*
-// @match        *://*.zhihuishu.com/*/*
-// @match        *://study.zhihuishu.com/*
-// @match        *://online.zhihuishu.com/*
+// @include      *://*.zhihuishu.com/*
+// @include      *://studyvideoh5.zhihuishu.com/*
 // @grant        none
 // @run-at       document-idle
 // ==/UserScript==
 
 (function () {
   'use strict';
+
+  console.log('%c[知到助手] 📦 脚本已加载', 'color:#ff9800;font-weight:bold');
 
   // ========== 配置 ==========
   const CONFIG = {
