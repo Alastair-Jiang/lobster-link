@@ -1,53 +1,38 @@
 # 知到网课自动连播助手
 
-> 装一次，永久生效。看知到网课时自动播放 + 自动跳下一集，你只管记笔记。
+> v1.1.0 — 完全静默，零 DOM 注入，零检测风险
 
-## 安装步骤（3 分钟搞定）
+打开知到网课页面，自动播放 + 自动跳下一集 + 自动关弹窗。**无面板、无按钮、完全静默**，专心记笔记。
 
-### 1. 装 Tampermonkey 插件
-打开 Edge 或 Chrome 浏览器，进入扩展商店搜索 **Tampermonkey**（篡改猴），安装即可。
+## 安装
 
-- Edge: https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd
-- Chrome: https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
+1. Edge/Chrome 装 **Tampermonkey**（篡改猴）
+2. 把 `zhidao-autoplay.user.js` 拖进 Tampermonkey 管理面板 → 安装
 
-### 2. 导入脚本
-- 点击浏览器右上角 Tampermonkey 图标 → **管理面板**
-- 点击 **实用工具** 标签
-- 在「从 URL 安装」里粘贴下面的地址，点安装：
+## 快捷键（知到页面内可用）
 
-```
-https://raw.githubusercontent.com/aB-iJ/lobster-link/main/zhidao-autoplay/zhidao-autoplay.user.js
-```
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+Shift+1` | 切换自动播放 |
+| `Ctrl+Shift+2` | 切换自动下一集 |
+| `Ctrl+Shift+3` | 手动跳下一集 |
+| `Ctrl+Shift+4` | 切换自动关弹窗 |
+| `Ctrl+Shift+0` | 全部功能 开/关 |
+| `Ctrl+Shift+M` | 静音切换 |
+| `Ctrl+Shift+↑` | 加速 0.25x |
+| `Ctrl+Shift+↓` | 减速 0.25x |
 
-> 或者直接把 `zhidao-autoplay.user.js` 文件拖到 Tampermonkey 管理页面。
+## 默认行为
 
-### 3. 打开知到，开始记笔记
-打开知到网课页面，右下角会出现 🎬 **知到助手** 控制面板。
+- ✅ 自动播放 — 进页面自动点播放
+- ✅ 自动下一集 — 播完等 3 秒自动跳
+- ✅ 自动关弹窗 — "知道了"等弹窗自动关闭
+- ❌ 静音 — 默认不静音（认真听课）
+- ❌ 倍速 — 默认原速
 
-## 功能说明
+## 说明
 
-| 功能 | 说明 | 默认 |
-|------|------|------|
-| 自动播放 | 检测视频，自动点击播放 | ✅ 开 |
-| 自动下一集 | 视频播完自动跳下一集 | ✅ 开 |
-| 自动关弹窗 | 自动关闭"知道了"等弹窗 | ✅ 开 |
-| 静音播放 | 后台静音（听课建议别开） | ❌ 关 |
-| 倍速播放 | 1.25x ~ 2.0x 可调 | ❌ 关 |
-| 手动跳集 | 点击面板按钮手动跳下一集 | - |
-
-右下角面板可折叠，不影响看视频。
-
-## 注意事项
-
-- **只支持知到（zhihuishu.com）域名**，其他平台不会生效
-- 如果知到改了页面结构导致失效，告诉我，我更新脚本
-- 如果安装后没生效，刷新页面试试
-- 脚本完全本地运行，不会上传任何数据
-
-## 文件
-
-```
-zhidao-autoplay/
-├── zhidao-autoplay.user.js   ← 主脚本（拖进 Tampermonkey 就能用）
-└── README.md                 ← 本文件
-```
+- 只对 `*.zhihuishu.com` 域名生效
+- 快捷键状态会打印在浏览器 Console（F12 可查看）
+- 完全本地运行，不联网
+- v1.1.0 移除了浮动面板，避免平台检测

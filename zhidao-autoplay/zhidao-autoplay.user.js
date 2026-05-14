@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         知到网课自动连播助手
 // @namespace    https://jiangdongxu.online/
-// @version      1.0.0
-// @description  知到(智慧树)网课自动播放、自动下一集、自动跳过弹窗，安心记笔记
+// @version      1.1.0
+// @description  知到(智慧树)静默自动连播，无面板无检测，安心记笔记
 // @author       希伯来
 // @match        *://*.zhihuishu.com/*
 // @match        *://*.zhihuishu.com/*/*
@@ -19,10 +19,10 @@
   const CONFIG = {
     enableAutoPlay: true,        // 自动播放
     enableAutoNext: true,        // 自动下一集
-    enableAutoMute: false,       // 自动静音（默认关，方便听课）
-    enableSpeedControl: false,    // 倍速控制（默认关）
-    speed: 1.0,                  // 播放倍速（1.0 = 原速）
-    autoClosePopup: true,        // 自动关闭弹窗/题目提示
+    enableAutoMute: false,       // 自动静音
+    enableSpeedControl: false,   // 倍速控制（默认关）
+    speed: 1.0,                  // 倍速
+    autoClosePopup: true,        // 自动关闭弹窗
     pollInterval: 1500,          // 检测间隔 (ms)
     nextBtnTimeout: 3000,        // 视频结束后等多久点下一集 (ms)
   };
@@ -197,197 +197,75 @@
     updatePanel(video);
   }
 
-  // ========== 控制面板 UI ==========
-
-  function createPanel() {
-    panelEl = document.createElement('div');
-    panelEl.id = 'zd-helper-panel';
-    panelEl.innerHTML = `
-      <style>
-        #zd-helper-panel {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 99999;
-          background: rgba(30, 30, 40, 0.92);
-          color: #eee;
-          border-radius: 12px;
-          padding: 12px 16px;
-          font-size: 13px;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-          backdrop-filter: blur(8px);
-          min-width: 200px;
-          user-select: none;
-          transition: opacity 0.3s;
+  // ========== 键盘快捷键 ==========
+  // 所有控制通过快捷键，不在页面注入任何 UI，避免被检测
+  function setupKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+Shift+1: 切换自动播放
+      if (e.ctrlKey && e.shiftKey && e.key === '1') {
+        e.preventDefault();
+        CONFIG.enableAutoPlay = !CONFIG.enableAutoPlay;
+        console.log('[知到助手] 自动播放:', CONFIG.enableAutoPlay ? '✅ ON' : '❌ OFF');
+      }
+      // Ctrl+Shift+2: 切换自动下一集
+      if (e.ctrlKey && e.shiftKey && e.key === '2') {
+        e.preventDefault();
+        CONFIG.enableAutoNext = !CONFIG.enableAutoNext;
+        console.log('[知到助手] 自动下一集:', CONFIG.enableAutoNext ? '✅ ON' : '❌ OFF');
+      }
+      // Ctrl+Shift+3: 手动跳下一集
+      if (e.ctrlKey && e.shiftKey && e.key === '3') {
+        e.preventDefault();
+        const nextBtn = findNextBtn();
+        if (nextBtn) {
+          nextBtn.click();
+          console.log('[知到助手] ⏭ 手动跳转下一集');
+        } else {
+          console.log('[知到助手] ⚠ 未找到下一集按钮');
         }
-        #zd-helper-panel.minimized {
-          min-width: auto;
-          padding: 8px 12px;
-        }
-        #zd-helper-panel .zd-title {
-          font-weight: 700;
-          font-size: 14px;
-          margin-bottom: 8px;
-          color: #7ec8e3;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        #zd-helper-panel .zd-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin: 6px 0;
-        }
-        #zd-helper-panel .zd-row label {
-          cursor: pointer;
-          color: #bbb;
-          font-size: 12px;
-        }
-        #zd-helper-panel .zd-row input[type="checkbox"] {
-          accent-color: #7ec8e3;
-          cursor: pointer;
-        }
-        #zd-helper-panel .zd-row select,
-        #zd-helper-panel .zd-row input[type="range"] {
-          cursor: pointer;
-        }
-        #zd-helper-panel .zd-status {
-          font-size: 11px;
-          color: #4caf50;
-          margin-top: 6px;
-        }
-        #zd-helper-panel .zd-toggle {
-          cursor: pointer;
-          font-size: 16px;
-        }
-        #zd-helper-panel button {
-          background: #7ec8e3;
-          color: #111;
-          border: none;
-          border-radius: 6px;
-          padding: 4px 12px;
-          cursor: pointer;
-          font-size: 12px;
-          font-weight: 600;
-          margin-top: 6px;
-        }
-        #zd-helper-panel button:hover {
-          background: #a0d8f0;
-        }
-      </style>
-      <div class="zd-title">
-        <span>🎬 知到助手</span>
-        <span class="zd-toggle" id="zd-toggle-min">−</span>
-      </div>
-      <div id="zd-body">
-        <div class="zd-row">
-          <label><input type="checkbox" id="zd-autoplay" ${CONFIG.enableAutoPlay ? 'checked' : ''}> 自动播放</label>
-          <label><input type="checkbox" id="zd-autonext" ${CONFIG.enableAutoNext ? 'checked' : ''}> 自动下一集</label>
-        </div>
-        <div class="zd-row">
-          <label><input type="checkbox" id="zd-automute" ${CONFIG.enableAutoMute ? 'checked' : ''}> 静音播放</label>
-          <label><input type="checkbox" id="zd-speed-ctrl"> 倍速</label>
-        </div>
-        <div class="zd-row" id="zd-speed-row" style="display:none">
-          <span style="color:#bbb;font-size:12px">倍速:</span>
-          <select id="zd-speed">
-            <option value="1.0">1.0x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-            <option value="1.75">1.75x</option>
-            <option value="2.0">2.0x</option>
-          </select>
-        </div>
-        <div class="zd-row">
-          <label><input type="checkbox" id="zd-closepopup" ${CONFIG.autoClosePopup ? 'checked' : ''}> 自动关弹窗</label>
-        </div>
-        <div class="zd-status" id="zd-status">✅ 运行中</div>
-        <button id="zd-force-next">⏭ 手动跳下一集</button>
-      </div>
-    `;
-
-    document.body.appendChild(panelEl);
-
-    // 绑定事件
-    document.getElementById('zd-autoplay').addEventListener('change', (e) => {
-      CONFIG.enableAutoPlay = e.target.checked;
-    });
-    document.getElementById('zd-autonext').addEventListener('change', (e) => {
-      CONFIG.enableAutoNext = e.target.checked;
-    });
-    document.getElementById('zd-automute').addEventListener('change', (e) => {
-      CONFIG.enableAutoMute = e.target.checked;
-      const video = findVideo();
-      if (video) video.muted = e.target.checked;
-    });
-    document.getElementById('zd-closepopup').addEventListener('change', (e) => {
-      CONFIG.autoClosePopup = e.target.checked;
-    });
-    document.getElementById('zd-speed-ctrl').addEventListener('change', (e) => {
-      CONFIG.enableSpeedControl = e.target.checked;
-      document.getElementById('zd-speed-row').style.display = e.target.checked ? 'flex' : 'none';
-      const video = findVideo();
-      if (video) {
-        video.playbackRate = e.target.checked ? parseFloat(document.getElementById('zd-speed').value) : 1.0;
+      }
+      // Ctrl+Shift+4: 切换自动关弹窗
+      if (e.ctrlKey && e.shiftKey && e.key === '4') {
+        e.preventDefault();
+        CONFIG.autoClosePopup = !CONFIG.autoClosePopup;
+        console.log('[知到助手] 自动关弹窗:', CONFIG.autoClosePopup ? '✅ ON' : '❌ OFF');
+      }
+      // Ctrl+Shift+0: 开关全部功能
+      if (e.ctrlKey && e.shiftKey && e.key === '0') {
+        e.preventDefault();
+        const allOn = CONFIG.enableAutoPlay || CONFIG.enableAutoNext || CONFIG.autoClosePopup;
+        CONFIG.enableAutoPlay = !allOn;
+        CONFIG.enableAutoNext = !allOn;
+        CONFIG.autoClosePopup = !allOn;
+        console.log('[知到助手] 全部功能:', !allOn ? '✅ ON' : '❌ OFF');
+      }
+      // Ctrl+Shift+↑: 加速 0.25x
+      if (e.ctrlKey && e.shiftKey && e.key === 'ArrowUp') {
+        e.preventDefault();
+        CONFIG.speed = Math.min(2.0, CONFIG.speed + 0.25);
+        CONFIG.enableSpeedControl = true;
+        const video = findVideo();
+        if (video) video.playbackRate = CONFIG.speed;
+        console.log('[知到助手] 倍速:', CONFIG.speed + 'x');
+      }
+      // Ctrl+Shift+↓: 减速 0.25x
+      if (e.ctrlKey && e.shiftKey && e.key === 'ArrowDown') {
+        e.preventDefault();
+        CONFIG.speed = Math.max(0.5, CONFIG.speed - 0.25);
+        if (CONFIG.speed <= 1.0) CONFIG.enableSpeedControl = false;
+        const video = findVideo();
+        if (video) video.playbackRate = CONFIG.speed;
+        console.log('[知到助手] 倍速:', CONFIG.speed + 'x');
+      }
+      // Ctrl+Shift+M: 切换静音
+      if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+        e.preventDefault();
+        CONFIG.enableAutoMute = !CONFIG.enableAutoMute;
+        const video = findVideo();
+        if (video) video.muted = CONFIG.enableAutoMute;
+        console.log('[知到助手] 静音:', CONFIG.enableAutoMute ? '🔇 ON' : '🔊 OFF');
       }
     });
-    document.getElementById('zd-speed').addEventListener('change', (e) => {
-      CONFIG.speed = parseFloat(e.target.value);
-      const video = findVideo();
-      if (video) video.playbackRate = CONFIG.speed;
-    });
-    document.getElementById('zd-force-next').addEventListener('click', () => {
-      const nextBtn = findNextBtn();
-      if (nextBtn) {
-        nextBtn.click();
-        console.log('[知到助手] 手动跳转下一集');
-      } else {
-        alert('未找到下一集按钮');
-      }
-    });
-
-    // 最小化切换
-    document.getElementById('zd-toggle-min').addEventListener('click', () => {
-      const body = document.getElementById('zd-body');
-      const toggle = document.getElementById('zd-toggle-min');
-      if (body.style.display === 'none') {
-        body.style.display = 'block';
-        toggle.textContent = '−';
-        panelEl.classList.remove('minimized');
-      } else {
-        body.style.display = 'none';
-        toggle.textContent = '+';
-        panelEl.classList.add('minimized');
-      }
-    });
-  }
-
-  function updatePanel(video) {
-    const statusEl = document.getElementById('zd-status');
-    if (!statusEl) return;
-
-    if (video && !video.paused) {
-      const current = formatTime(video.currentTime);
-      const total = formatTime(video.duration);
-      statusEl.textContent = `▶ 播放中 ${current} / ${total}`;
-      statusEl.style.color = '#4caf50';
-    } else if (video && video.paused) {
-      statusEl.textContent = '⏸ 已暂停 (尝试自动播放中...)';
-      statusEl.style.color = '#ff9800';
-    } else {
-      statusEl.textContent = '⏳ 等待视频加载...';
-      statusEl.style.color = '#9e9e9e';
-    }
-  }
-
-  function formatTime(seconds) {
-    if (!seconds || isNaN(seconds)) return '--:--';
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60);
-    return `${m}:${s.toString().padStart(2, '0')}`;
   }
 
   // ========== 启动 & 停止 ==========
@@ -421,9 +299,8 @@
   }
 
   function initWhenReady() {
-    // 等待页面完全渲染
     setTimeout(() => {
-      createPanel();
+      setupKeyboard();
       start();
     }, 2000);
   }
@@ -438,5 +315,6 @@
     }
   }).observe(document, { subtree: true, childList: true });
 
-  console.log('[知到助手] 脚本已加载，等待页面就绪...');
+  console.log('%c[知到助手] 🎬 静默模式已就绪 %c| 快捷键: Ctrl+Shift+1-4 控制各项 | Ctrl+Shift+0 全部开关', 'color:#7ec8e3;font-weight:bold', 'color:#999');
+  console.log('%c[知到助手] 自动播放=✅ | 自动下一集=✅ | 自动关弹窗=✅', 'color:#4caf50');
 })();
