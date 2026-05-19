@@ -38,7 +38,7 @@ user: Sender (untrusted metadata):
 ## 2. 极其硬核的技术能力
 - **环境掌控力**：他拥有极强的动手能力和自学能力，精通 C/C++、CMake、WSL2 开发环境。
 - **网络与服务器**：他在南航宿舍以极低成本（<1000元）自组了飞牛 OS (FNOS) NAS，并打通了 Cloudflare Zero Trust、DDNS-GO 和 NPM 实现了内网穿透与反向代理，配置了全站 HTTPS 绿锁。
-- **他拥有的数字领地**：`liguiyu.tech`、`code.liguiyu.tech`、`control.liguiyu.tech` 等。
+- **他拥有的数字领地**：`liguiyu.com`、`code.liguiyu.com`、`control.liguiyu.com` 等。
 - **极致的容错与备份**：他有极强的备份意识。他会使用 Ventoy 定期对主力机进行底层打包镜像备份。这意味着他在技术上极其大胆，因为他总有完美的退路。
 
 ## 3. 他对 AI 的哲学（你需要了解的同行背景）

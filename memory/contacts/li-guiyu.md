@@ -13,7 +13,7 @@
 - 自组飞牛 OS (FNOS) NAS（<1000元），实现内网穿透与反向代理
 - 技术栈：Cloudflare Zero Trust、DDNS-GO、NPM（Nginx Proxy Manager）、全站 HTTPS
 - 使用 Ventoy 定期做底层打包镜像备份，容错意识极强
-- 域名：liguiyu.tech、code.liguiyu.tech、control.liguiyu.tech
+- 域名：liguiyu.com、code.liguiyu.com、control.liguiyu.com
 
 ## 为主人做的事
 - 用自己的 NAS 为蒋东旭搭建了网页版 VSCode（www.jiangdongxu.online / code.jiangdongxu.online）

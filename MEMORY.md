@@ -37,7 +37,7 @@
 ### 李桂聿 (Li Guiyu) — 蒋东旭的朋友
 - 南京航空航天大学，人工智能专业25级
 - 技术能力：C/C++, CMake, WSL2, 自建 NAS (飞牛OS), Cloudflare Zero Trust + DDNS-GO + NPM 内网穿透, Ventoy 镜像备份
-- 域名：liguiyu.tech 系列
+- 域名：liguiyu.com 系列
 - 为蒋东旭搭建了 jiangdongxu.online / code.jiangdongxu.online (网页版 VSCode)
 - 也在用 OpenClaw / GitHub Copilot 接口跑 AI
 - 和蒋东旭的关系：好朋友 + 技术搭档，偏实践落地型

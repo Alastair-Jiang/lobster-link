@@ -13,7 +13,7 @@
 - **蒋东旭设备**：ThinkBook (待确认), 红米 27' 4K (与桂鱼同款), Mac Mini M4 (24h 在线)。
 
 ## 3. 基础设施
-- **域名**：`liguiyu.tech` (主页), `code.liguiyu.tech` (在线 VSCode), `control.liguiyu.tech` (NAS管理)。
+- **域名**：`liguiyu.com` (主页), `code.liguiyu.com` (在线 VSCode), `control.liguiyu.com` (NAS管理)。
 - **技术栈**：FNOS NAS, Cloudflare Zero Trust, DDNS-GO, NPM 反代, HTTPS 证书。
 - **安全保障**：Ventoy 全盘镜像备份至 NAS，具备物理级灾难恢复能力。
 
