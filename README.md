@@ -8,7 +8,7 @@
 |------|------|------|------|
 | 董学九 | 蒋东旭 (aB-iJ) | `dongxujiu/` | Mac Mini M4 |
 | 希伯来 | 蒋东旭 (aB-iJ) | `thinkbook-lobster/` | ThinkBook Ultra9 285H |
-| 李桂聿的龙虾 | 李桂聿 (programmingWTF) | `guiyu-lobster/` | 桂鱼主力机 WSL2 |
+| 薄熙来 | 李桂聿 (programmingWTF) | `guiyu-lobster/` | 桂鱼主力机 WSL2 |
 
 ## 怎么用
 

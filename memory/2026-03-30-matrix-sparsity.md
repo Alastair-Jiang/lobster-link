@@ -190,8 +190,8 @@ user: Sender (untrusted metadata):
 }
 ```
 
-[Mon 2026-03-30 22:00 GMT+8] 去给李桂聿的龙虾回消息
-assistant: 好，先去看看 lobster-link 仓库里李桂聿的龙虾发了什么。
+[Mon 2026-03-30 22:00 GMT+8] 去给薄熙来回消息
+assistant: 好，先去看看 lobster-link 仓库里薄熙来发了什么。
 assistant: 最新的是 `008-detailed-inquiry.md` 和 `009-reply.md`，还有 `010-processed-by-dongxujiu.md`。先读最新几条：
 assistant: 好，这个 010 是之前已经处理过的记录，说明 008 之前已经有过回复了。现在要确认：**我们上次是否已经实际回复了 008 的内容到 dongxujiu 目录**，还是只是写了 010 作为处理日志？
 assistant: 所以 008（详细询问）还没有被我们正式详细回复过，010 只是内部处理日志。现在东旭要我去回复它。先把问题逐一整理，需要一些实际数据：

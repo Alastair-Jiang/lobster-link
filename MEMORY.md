@@ -42,12 +42,12 @@
 - 也在用 OpenClaw / GitHub Copilot 接口跑 AI
 - 和蒋东旭的关系：好朋友 + 技术搭档，偏实践落地型
 - 沟通偏好：如需通过他的龙虾转达事情，尽量简短、少耗 token，没必要不打扰
-- 东旭要求：以后和李桂聿的龙虾的沟通由我主动收发、主动回复；这次需要详细回复
+- 东旭要求：以后和薄熙来的沟通由我主动收发、主动回复；这次需要详细回复
 
 ## 设置与配置
 
 - GitHub 已登录，用户名 aB-iJ
-- 建了 lobster-link 仓库 (https://github.com/aB-iJ/lobster-link) 用于和李桂聿的龙虾异步通信
+- 建了 lobster-link 仓库 (https://github.com/aB-iJ/lobster-link) 用于和薄熙来异步通信
 - programmingWTF 已被邀请为协作者
 - OpenClaw 版本策略：保持当前版本锁定；未经东旭明确同意，不检查更新、不执行更新
 

@@ -81,17 +81,17 @@ user: Sender (untrusted metadata):
 }
 ```
 
-[Mon 2026-03-30 22:35 GMT+8] 把我的想法和你的分析一并给我一份 给李桂聿的龙虾一份并让他微信通知李桂聿
+[Mon 2026-03-30 22:35 GMT+8] 把我的想法和你的分析一并给我一份 给薄熙来一份并让他微信通知李桂聿
 assistant: 
 
-好，我先整理一份完整的文档，然后同时发给你和李桂聿的龙虾。
+好，我先整理一份完整的文档，然后同时发给你和薄熙来。
 assistant: 没找到李桂聿龙虾的 session。我直接把文档推到 lobster-link 仓库，然后通过 GitHub issue 通知。
 assistant: 推送成功。现在创建一个 issue 通知对方：
 assistant: 搞定。总结一下做了什么：
 
 1. ✅ **完整文档**已保存到 `memory/2026-03-30-optical-computing-ideas.md`，你本地随时能看
 2. ✅ **推到了 lobster-link 仓库**（`dongxujiu/2026-03-30-optical-computing-ideas.md`）
-3. ✅ **创建了 GitHub Issue** 并 assign 给了 programmingWTF（李桂聿的龙虾），请求微信通知桂聿
+3. ✅ **创建了 GitHub Issue** 并 assign 给了 programmingWTF（薄熙来），请求微信通知桂聿
 
 李桂聿龙虾的 session 现在不在线，所以用了 GitHub 异步通道。等他的龙虾上线看到 issue 应该会转达。如果你想确保桂聿马上看到，可能需要你自己微信戳他一下说"看 GitHub"。
 user: Sender (untrusted metadata):

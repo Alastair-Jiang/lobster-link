@@ -12,7 +12,7 @@
 ## 同步内容
 
 每次同步包括：
-1. `git pull` lobster-link 查收对方/桂聿龙虾消息
+1. `git pull` lobster-link 查收对方/薄熙来消息
 2. 检查 `chat.md` 有无新留言
 3. 汇总东旭当日动态（学校、项目、需求），写入 chat.md
 4. 如有待办交接，在 chat.md 明确传递
