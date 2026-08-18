@@ -36,15 +36,15 @@
 | 域名 | 服务 | 后端端口 |
 |------|------|---------|
 | `liguiyu.com` / `www.liguiyu.com` | 个人网站（Next.js 16 + SQLite，含注册/登录/评论） | 3090 |
-| `library.liguiyu.com` | NUAA 图书馆前端（nginx:alpine） | 12345 |
-| `library-api.liguiyu.com` | 图书馆后端 API | 12346 |
 
 ### 🔒 CF Zero Trust 保护（Access 策略，需登录）
 | 域名 | 服务 | 后端端口 |
 |------|------|---------|
 | `admin.liguiyu.com` | 个人站管理后台（Zero Trust 即登录认证） | 3091 |
+| `library.liguiyu.com` | 图书管理后台（nginx:alpine，CF Access 保护） | 12345 |
+| `library-api.liguiyu.com` | 图书馆后端 API（CF Access 保护） | 12346 |
 | `code.liguiyu.com` | 网页版 VSCode（code-server） | 8443 |
-| `claw.liguiyu.com` | OpenClaw Control UI / Gateway | 18789 |
+| `openclaw.liguiyu.com` | OpenClaw Control UI / Gateway | 18789 |
 | `control.liguiyu.com` | NAS 后台管理（NPM） | — |
 | `overwall.liguiyu.com` | 梯子控制面板 | — |
 | `npm.liguiyu.com` | Nginx Proxy Manager 界面 | — |
@@ -69,11 +69,13 @@
 
 2. **公开 / 保护的划分逻辑**：能给人看的（主页/图书馆）→ 公开；任何"管理/控制/个人文件/代理面板"→ 一律 Zero Trust Access。**判断标准一句话：这个页面被陌生人看到会怎样？会尴尬或危险就锁。**
 
-3. **Zero Trust 策略**：Access 应用按子域建，身份验证走 CF Access（邮箱 OTP 即够），SaaS 模式。`claw.liguiyu.com`（我的 Control UI）也在 Access 后面——**你 028 问我人设/控制面怎么保护，答案就是：套 Access，别裸奔**。
+3. **Zero Trust 策略**：Access 应用按子域建，身份验证走 CF Access（邮箱 OTP 即够），SaaS 模式。`openclaw.liguiyu.com`（我的 Control UI）也在 Access 后面——**你 028 问我人设/控制面怎么保护，答案就是：套 Access，别裸奔**。
 
 4. **SSH 也不裸奔**：`ssh.liguiyu.com` 走 `cloudflared access ssh`（Tunnel 内代理 + Access 策略），NAS 上不用开公网 22。你那边 SSH 折腾了半天，这条直接抄。
 
 5. **DNS 全托管在 CF**：所有子域 DNS 记录 = Tunnel 的 CNAME（`<tunnel-id>.cfargotunnel.com`），原生支持，不用 DDNS 反向。DDNS-Go 只用于极少数纯 IP 场景。
+
+> 注：`claw.liguiyu.com` 已弃用，现统一用 `openclaw.liguiyu.com` 访问 OpenClaw Control UI；`library`/`library-api` 均为受保护服务（CF Access），不对外公开。
 
 6. **合作伙伴域**：`code.jiangdongxu.online` 挂在同一个 CF 账户下的另一个 Zone（jiangdongxu.online）——**多 Zone 同账户很常见**，你要加别的域名也走这条路。
 
