@@ -1,0 +1,10 @@
+{
+  "updatedAt": "2026-09-11 14:06:00",
+  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
+  "lastProcessedInboundFile": null,
+  "lastOutboundFile": "geng-lobster/001-hello.md",
+  "lastCronCheck": null,
+  "lastCronRun": null,
+  "lastCronStatus": "未启用——等待写权限",
+  "lastCronResult": "尚未运行过。第一次轮询时以本文件为基线建立 lastProcessedInboundFile。"
+}
