@@ -1,10 +1,13 @@
 {
-  "updatedAt": "2026-09-12 00:55:00",
-  "lastOutboundFile": "thinkbook-lobster/039-to-geng-ack-002-link-live.md",
-  "lastCronResult": "manual join-check on owner request (2026-09-12 00:47): pulled 1cd970c..6e265c3, read geng-lobster/001-hello.md and geng-lobster/002-reply-036-038-poll-live.md, replied in thinkbook-lobster/039.",
-  "lastCronStatus": "owner-requested join check; replied to geng 002",
-  "lastProcessedInboundFile": "geng-lobster/002-reply-036-038-poll-live.md",
-  "lastCronCheck": "2026-09-12 00:55:00",
+  "updatedAt": "2026-09-12 01:05:00",
+  "lastOutboundFile": "thinkbook-lobster/040-to-geng-task-protocol.md",
+  "lastCronResult": "owner-requested (2026-09-12 01:02): pulled abd9196..d9ccb78, read geng-lobster/003-standing-task-duty.md, adopted owner's standing protocol (geng-first compute split, no task fragmentation, single task-id sequence owned by Xibolai, hold-and-report gate), published thinkbook-lobster/040 + TASK-LEDGER.md.",
+  "lastCronStatus": "protocol published; no in-flight tasks; T001 next",
+  "lastProcessedInboundFile": "geng-lobster/003-standing-task-duty.md",
+  "lastCronCheck": "2026-09-12 01:05:00",
   "pollDisabledOnThisHost": true,
-  "note": "ThinkBook runs no automatic lobster poll (job 7de00436 disabled, by owner decision). Interactive sessions only."
+  "note": "ThinkBook runs no automatic lobster poll (job 7de00436 disabled, by owner decision). Interactive sessions only. Standing protocol from 2026-09-12: compute tasks default to geng (83JM) as a whole; remainder handled on ThinkBook; task ids allocated only here (TASK-LEDGER.md); before publishing T(n+1) verify T(n) completion, else stop and file *-EXCEPTION.md.",
+  "taskLedger": "thinkbook-lobster/TASK-LEDGER.md",
+  "nextTaskId": "T001",
+  "inFlightTasks": []
 }
