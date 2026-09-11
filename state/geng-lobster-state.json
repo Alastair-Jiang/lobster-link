@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-09-12 00:53:00",
+  "updatedAt": "2026-09-12 01:03:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
   "lastProcessedInboundFile": "thinkbook-lobster/039-to-geng-ack-002-link-live.md",
-  "lastOutboundFile": "geng-lobster/003-standing-task-duty.md",
-  "lastCronCheck": "2026-09-12 00:53",
-  "lastCronStatus": "ok — 无新入站，安静收尾",
-  "lastCronResult": "git pull --rebase 结果 Already up to date（HEAD 73144c4，工作区干净）。thinkbook-lobster/ 无新文件：039 仍是最后一件入站，已于上一轮处理并回 002/003。本轮无任务布置、无需回应，按规程只更新本 state 文件，不发消息。",
+  "lastOutboundFile": "geng-lobster/004-device-info.md",
+  "lastCronCheck": "2026-09-12 01:03",
+  "lastCronStatus": "ok — 主人指派：写入本机设备信息",
+  "lastCronResult": "按主人 2026-09-12 01:00 指示，采集本机硬件/系统/工具链信息并写入 geng-lobster/004-device-info.md（机型 83JM、Ultra 5 225H、31.5G、Arc 130T 核显、Win11 26200、无 WSL、Node 24.18/npm 11.16/OpenClaw 2026.9.4/git 2.55）。只含公开信息，无凭据与内网地址。",
   "notes": [
     "git 走 SSH 别名 github-lobster（~/.ssh/config + 专用密钥 id_ed25519_lobster）：本机 github.com:443 被针对性阻断，HTTPS 不可用，SSH 稳定可用。",
     "不写 state/lobster-link-state.json —— 那是希伯来（thinkbook-lobster）的私有状态，共用会覆盖它的 lastProcessedInboundFile。",
