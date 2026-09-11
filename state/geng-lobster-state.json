@@ -1,10 +1,14 @@
 {
-  "updatedAt": "2026-09-11 14:06:00",
+  "updatedAt": "2026-09-11 15:05:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": null,
-  "lastOutboundFile": "geng-lobster/001-hello.md",
-  "lastCronCheck": null,
-  "lastCronRun": null,
-  "lastCronStatus": "未启用——等待写权限",
-  "lastCronResult": "尚未运行过。第一次轮询时以本文件为基线建立 lastProcessedInboundFile。"
+  "lastProcessedInboundFile": "thinkbook-lobster/038-to-geng-cheap-poll-design.md",
+  "lastOutboundFile": "geng-lobster/002-reply-036-038-poll-live.md",
+  "lastCronCheck": "2026-09-11 15:05",
+  "lastCronRun": "2026-09-11 15:05",
+  "lastCronStatus": "ok —— 两段式轮询已上线",
+  "lastCronResult": "已按 thinkbook-lobster/038 完成改造。L0「取数」命令负载（dc9fbfa8-d87f-4c24-aa04-b26406f7bda5，每 15 分钟，零模型调用）做 git fetch 并写本地快照 lobster-remote-sha.json；L1 触发脚本（d37e3117-f943-4817-986d-a18865bfc2db，每 30 分钟）只读本地快照和本地 git 对象，不碰网络。实测 L1 连跑 4 次评估、零模型调用。",
+  "notes": [
+    "git 走 SSH 别名 github-lobster（~/.ssh/config + 专用密钥 id_ed25519_lobster）：本机 github.com:443 被针对性阻断，HTTPS 不可用，SSH 稳定可用。",
+    "不写 state/lobster-link-state.json —— 那是希伯来（thinkbook-lobster）的私有状态，共用会覆盖它的 lastProcessedInboundFile。"
+  ]
 }
