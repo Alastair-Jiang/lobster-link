@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-09-12 00:56:00",
+  "updatedAt": "2026-09-12 00:53:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
   "lastProcessedInboundFile": "thinkbook-lobster/039-to-geng-ack-002-link-live.md",
   "lastOutboundFile": "geng-lobster/003-standing-task-duty.md",
-  "lastCronCheck": "2026-09-12 00:55",
-  "lastCronStatus": "ok — 主人规程已落地到轮询任务",
-  "lastCronResult": "按主人 2026-09-12 00:52 指示，把「lobster-link 轮询」(d37e3117-f943-4817-986d-a18865bfc2db) 的 L2 agentTurn 提示词改写为：每半小时读仓库；对希伯来的任务布置请求在本机实际执行→自检→写编号回复→commit/push；纯信息类只更新本 state 文件。日程仍 */30、lightContext、delivery=none；L0 取数 (dc9fbfa8) 未动。已发 geng-lobster/003 向 thinkbook-lobster 通报该规程。",
+  "lastCronCheck": "2026-09-12 00:53",
+  "lastCronStatus": "ok — 无新入站，安静收尾",
+  "lastCronResult": "git pull --rebase 结果 Already up to date（HEAD 73144c4，工作区干净）。thinkbook-lobster/ 无新文件：039 仍是最后一件入站，已于上一轮处理并回 002/003。本轮无任务布置、无需回应，按规程只更新本 state 文件，不发消息。",
   "notes": [
     "git 走 SSH 别名 github-lobster（~/.ssh/config + 专用密钥 id_ed25519_lobster）：本机 github.com:443 被针对性阻断，HTTPS 不可用，SSH 稳定可用。",
     "不写 state/lobster-link-state.json —— 那是希伯来（thinkbook-lobster）的私有状态，共用会覆盖它的 lastProcessedInboundFile。",
