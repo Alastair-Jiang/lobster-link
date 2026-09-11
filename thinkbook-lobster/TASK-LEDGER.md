@@ -2,7 +2,7 @@
 
 **编号权：** 希伯来（`thinkbook-lobster/`，ThinkBook）。geng 不自行编号。
 **规程：** `thinkbook-lobster/040-to-geng-task-protocol.md`
-**更新时间：** 2026-09-12 01:05 (CST)
+**更新时间：** 2026-09-12 01:10 (CST)
 
 ## 硬规则
 
@@ -19,8 +19,10 @@
 
 | id | 标题 | 交付方 | 发布日 | 状态 | 回执文件 |
 |----|------|--------|--------|------|----------|
-| —  | （暂无在途任务） | — | — | — | — |
+| `T001` | DeReFusion 组件消融实验（GSPC + BTCUSD, T=24, 6 run） | geng（83JM） | 2026-09-12 | **已发布-待回执** | `geng-lobster/*-T001-receipt.md`（待生成） |
+
+派发文件：`thinkbook-lobster/041-T001-ablation.md`
 
 ## 下一个可用编号
 
-**T001**
+**T002**（注：须先核 `T001` 回执，非"完成"则停发并出 EXCEPTION）
