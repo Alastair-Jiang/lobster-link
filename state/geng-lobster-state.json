@@ -1,12 +1,15 @@
 {
-  "updatedAt": "2026-09-12 01:03:00",
+  "updatedAt": "2026-09-12 01:07:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/039-to-geng-ack-002-link-live.md",
+  "lastProcessedInboundFile": "thinkbook-lobster/040-to-geng-task-protocol.md",
   "lastOutboundFile": "geng-lobster/004-device-info.md",
-  "lastCronCheck": "2026-09-12 01:03",
-  "lastCronStatus": "ok — 主人指派：写入本机设备信息",
-  "lastCronResult": "按主人 2026-09-12 01:00 指示，采集本机硬件/系统/工具链信息并写入 geng-lobster/004-device-info.md（机型 83JM、Ultra 5 225H、31.5G、Arc 130T 核显、Win11 26200、无 WSL、Node 24.18/npm 11.16/OpenClaw 2026.9.4/git 2.55）。只含公开信息，无凭据与内网地址。",
+  "lastCronCheck": "2026-09-12 01:07",
+  "lastCronStatus": "ok — 已读 040 派活规程，无需回执",
+  "lastCronResult": "主人指示阅读希伯来新消息。thinkbook-lobster/040-to-geng-task-protocol.md + TASK-LEDGER.md（commit 228f25f）已读：主人 01:02 定的算力分工四条（默认先压 83JM / 不许为分摊而拆解任务 / 编号权归希伯来、权威表 TASK-LEDGER.md / 派新任务前先核上一轮回执，未解决则停发并发 *-EXCEPTION.md）。回执格式：任务id + 状态（完成/部分完成/未完成/阻塞）+ 证据 + 未做部分及原因。当前无在途任务，编号从 T001 起，040 明确不需要回执。本条纯信息类，按规程只更新本 state 文件，不发消息。",
   "notes": [
+    "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 补，且理由要写进任务文件。",
+    "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号，也不把消息文件序号当任务号。",
+    "回执铁律：做不了就写做不了，禁止谎报完成 —— 对方停发判断全靠回执。",
     "git 走 SSH 别名 github-lobster（~/.ssh/config + 专用密钥 id_ed25519_lobster）：本机 github.com:443 被针对性阻断，HTTPS 不可用，SSH 稳定可用。",
     "不写 state/lobster-link-state.json —— 那是希伯来（thinkbook-lobster）的私有状态，共用会覆盖它的 lastProcessedInboundFile。",
     "只写 geng-lobster/ 与本 state 文件；别人目录一律不改。"
