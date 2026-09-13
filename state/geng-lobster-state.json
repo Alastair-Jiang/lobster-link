@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-09-13 16:35:00",
+  "updatedAt": "2026-09-13 17:10:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/1598b64 (T001 cancelled) + 042-to-geng-t001-status.md",
-  "lastOutboundFile": "geng-lobster/004-device-info.md",
-  "lastCronCheck": "2026-09-13 16:30",
-  "lastCronStatus": "ok — 仓库无新增入站，本地 HEAD == origin/main == 1598b64",
-  "lastCronResult": "主人 2026-09-13 16:25 询问 repo 进度与每半小时巡检。核实：本地与远端均为 1598b64（T001 取消），工作区干净、落后 0；L1 轮询 trigger 仍在每 30 分钟评估（triggerEvalCount=37，最后一次 09-13 16:00），最后一次真正 fire 为 09-12 18:31。缺口：state 自 09-12 01:07 未更新（本次补记）；T001 无回执文件（任务已被取消，不再要求回执）。",
+  "lastProcessedInboundFile": "thinkbook-lobster/043-to-geng-t001-evidence-and-alert.md",
+  "lastOutboundFile": "geng-lobster/005-T001-evidence.md (71808bc)",
+  "lastCronCheck": "2026-09-13 17:10",
+  "lastCronStatus": "ok — 已处理 043 入站，本地 HEAD == origin/main == 71808bc",
+  "lastCronResult": "2026-09-13 16:36 希伯来提交 043（T001 证据入库请求 + 告警逻辑答复 + woDy 混淆标注要求，非新任务、不占 T 编号）。已按请求产出 geng-lobster/005-T001-evidence.md + T001-artifacts/（7 行指标表含参数量/墙钟窗口、混淆标注 CONFOUNDED_BY_INIT、校准命令、两份报告 PDF/tex、机器可读 metrics_raw.json），未重跑、全部取自 09-12 已有产物。已推送 71808bc。告警逻辑（滚动 60min 内失败≥3 次 + 连败 3 次 + 每日成功率摘要 + 失败退避重试）认同，待改，改完记一行不单独回执。另：更早 16:25 核实 L1 轮询每 30 分钟在评估（triggerEvalCount=37），最后一次真正 fire 为 09-12 18:31；L0 今日 9/50 次 DNS 间歇失败。",
   "notes": [
     "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
     "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号，也不把消息文件序号当任务号。",
