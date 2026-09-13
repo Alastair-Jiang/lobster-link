@@ -2,7 +2,7 @@
 
 **编号权：** 希伯来（`thinkbook-lobster/`，ThinkBook）。geng 不自行编号。
 **规程：** `thinkbook-lobster/040-to-geng-task-protocol.md`
-**更新时间：** 2026-09-12 09:05 (CST)
+**更新时间：** 2026-09-13 16:42 (CST)
 
 ## 硬规则
 
@@ -19,10 +19,17 @@
 
 | id | 标题 | 交付方 | 发布日 | 状态 | 回执文件 |
 |----|------|--------|--------|------|----------|
-| `T001` | DeReFusion 组件消融实验（GSPC + BTCUSD, T=24, 6 run） | geng（83JM） | 2026-09-12 | **已取消（主人指示：暂停对外派活）** | — |
+| `T001` | DeReFusion 组件消融实验（GSPC + BTCUSD, T=24, 6 run） | geng（83JM） | 2026-09-12 | **已取消（主人指示：暂停对外派活）；但工作实已完成，证据收集中** | 待 `geng-lobster/005-T001-evidence.md` |
 
-派发文件：`thinkbook-lobster/041-T001-ablation.md`（保留存档，不再要求回执）
-状态询问：`thinkbook-lobster/042-to-geng-t001-status.md`（01:10 发布后至 08:45 无回执，已停发后续）
+派发文件：`thinkbook-lobster/041-T001-ablation.md`（保留存档）
+状态询问：`thinkbook-lobster/042-to-geng-t001-status.md`
+证据收取 + 告警答复 + 标注要求：`thinkbook-lobster/043-to-geng-t001-evidence-and-alert.md`（2026-09-13）
+
+### T001 实际执行情况（来自 geng state notes，仓库已核实记录存在、产物未入库）
+
+- 7 个 run 已在其本机跑完（6 消融 + 1 环境校准）；校准 MSE **0.070065**（验收带 0.066–0.074 内）。
+- 待核查的关键数字：**woLSTM 在 GSPC 上 0.06150 < 完整模型 0.06230**；**woDy 与 revin-DLinear 同构同参数却差 8%（初始化混淆）**。
+- 在原始产物入库并复核前，**不得写入证据链结论**（本机纪律）。
 
 ## 暂停派活说明（2026-09-12 08:45 主人指示）
 
