@@ -1,17 +1,20 @@
 {
-  "updatedAt": "2026-09-12 01:07:00",
+  "updatedAt": "2026-09-13 16:35:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/040-to-geng-task-protocol.md",
+  "lastProcessedInboundFile": "thinkbook-lobster/1598b64 (T001 cancelled) + 042-to-geng-t001-status.md",
   "lastOutboundFile": "geng-lobster/004-device-info.md",
-  "lastCronCheck": "2026-09-12 01:07",
-  "lastCronStatus": "ok — 已读 040 派活规程，无需回执",
-  "lastCronResult": "主人指示阅读希伯来新消息。thinkbook-lobster/040-to-geng-task-protocol.md + TASK-LEDGER.md（commit 228f25f）已读：主人 01:02 定的算力分工四条（默认先压 83JM / 不许为分摊而拆解任务 / 编号权归希伯来、权威表 TASK-LEDGER.md / 派新任务前先核上一轮回执，未解决则停发并发 *-EXCEPTION.md）。回执格式：任务id + 状态（完成/部分完成/未完成/阻塞）+ 证据 + 未做部分及原因。当前无在途任务，编号从 T001 起，040 明确不需要回执。本条纯信息类，按规程只更新本 state 文件，不发消息。",
+  "lastCronCheck": "2026-09-13 16:30",
+  "lastCronStatus": "ok — 仓库无新增入站，本地 HEAD == origin/main == 1598b64",
+  "lastCronResult": "主人 2026-09-13 16:25 询问 repo 进度与每半小时巡检。核实：本地与远端均为 1598b64（T001 取消），工作区干净、落后 0；L1 轮询 trigger 仍在每 30 分钟评估（triggerEvalCount=37，最后一次 09-13 16:00），最后一次真正 fire 为 09-12 18:31。缺口：state 自 09-12 01:07 未更新（本次补记）；T001 无回执文件（任务已被取消，不再要求回执）。",
   "notes": [
-    "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 补，且理由要写进任务文件。",
+    "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
     "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号，也不把消息文件序号当任务号。",
     "回执铁律：做不了就写做不了，禁止谎报完成 —— 对方停发判断全靠回执。",
     "git 走 SSH 别名 github-lobster（~/.ssh/config + 专用密钥 id_ed25519_lobster）：本机 github.com:443 被针对性阻断，HTTPS 不可用，SSH 稳定可用。",
     "不写 state/lobster-link-state.json —— 那是希伯来（thinkbook-lobster）的私有状态，共用会覆盖它的 lastProcessedInboundFile。",
-    "只写 geng-lobster/ 与本 state 文件；别人目录一律不改。"
+    "只写 geng-lobster/ 与本 state 文件；别人目录一律不改。",
+    "T001（DeReFusion 组件消融）状态：2026-09-12 01:08 由希伯来派发，同日 08:52 被其取消（主人指示暂停对外派活），账本记为已取消、不再要求回执。",
+    "T001 实际执行：7 个 run 全部在本机跑完（GSPC+BTCUSD × woDy/woLSTM/woTransformer + 1 环境校准），环境校准 MSE 0.070065 落在验收带 0.066-0.074 内。意外发现：woLSTM 在 GSPC 上反超完整模型（0.06150 < 0.06230）；woDy 消融被权重初始化混淆（与 revin-DLinear 同构同参数量，MSE 差 8%）。",
+    "巡检健康度（2026-09-13 核实）：L0 取数每 15 分钟跑，今日约 18% 因 DNS 间歇失败（含 16:15）；09-12 21:30 -> 09-13 12:07 断 14.6 小时，系机器休眠所致，非任务故障。L1 轮询每 30 分钟评估，仅在确有新入站时唤醒 L2。"
   ]
 }
