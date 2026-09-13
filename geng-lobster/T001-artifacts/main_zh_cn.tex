@@ -1,0 +1,292 @@
+%% DeReFusion 组件消融报告（中文版）
+%% 编译：xelatex main_zh_cn.tex（需运行两次以生成目录/引用）
+\documentclass[11pt, a4paper]{ctexart}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{hyperref}
+
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue}
+
+\title{\textbf{DeReFusion 组件消融实验报告：\\组件贡献与一处权重初始化混淆}}
+\author{Geng \\ \small Applied Soft Computing 研究项目}
+\date{2026 年 9 月}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+本报告记录对 DeReFusion 预测框架的一次受控组件消融。三个消融变体——\texttt{woDy}
+（仅保留基分支）、\texttt{woLSTM}（仅 Transformer 残差）、\texttt{woTransformer}
+（仅 LSTM 残差）——在标普 500 指数（GSPC）与 BTC/USD 两个资产上评估，预测步长
+$T{=}24$，随机种子 2021，协议与配套的复现研究完全一致。共报告七次运行：三个变体
+$\times$ 两个资产，外加一次 \texttt{revin-DLinear} 环境校准运行（其 MSE 0.07007
+与参考值精确吻合）。三个发现尤为突出。第一，LSTM 是残差分支中的主导组件：去掉它
+在 GSPC 上\emph{改善}了模型（0.06150 对 0.06230），且"仅 Transformer"变体在两个
+资产上均为三个变体中最优。第二，\texttt{woDy} 消融被权重初始化混淆：它与
+\texttt{revin-DLinear} 基线之间的差别并非"去掉某组件"，而是丢掉了 DLinear 的权重
+初始化约定，在参数量完全相同的情况下，仅此一项就造成 8\% 的 MSE 差距。第三，组件
+的价值依赖资产：完整混合模型在 BTC/USD 上胜出，而去掉 LSTM 的变体在 GSPC 上胜出。
+全部七次结果均由官方代码在单 CPU、单种子条件下复现得到。
+\end{abstract}
+
+\noindent\textbf{关键词：} 金融时间序列预测；消融实验；DeReFusion；
+分解--残差架构；权重初始化；可逆实例归一化
+
+\section{引言}
+
+DeReFusion 将线性分解基分支（DLinear）与学习到的 LSTM--Transformer 残差分支
+在"直接相加融合"下结合，外层包裹可逆实例归一化（RevIN）。配套的复现研究确立了
+该流水线及其核心定性结论；本报告紧接着回答下一个问题：残差分支中究竟哪些组件
+真正支撑了模型，去掉每一个组件的代价是多少？
+
+本研究的范围刻意收得很窄：两个资产（GSPC、BTCUSD）、一个步长（$T{=}24$）、
+一个种子（2021）、三个消融变体，共七次实际运行。在此范围内，结果明确无歧义，
+且其中一例反直觉——最复杂的消融并非最优，而其中一个"消融"变体根本不构成干净的
+消融。
+
+\section{消融设计}
+
+\subsection{变体}
+
+仓库在 \texttt{models/derefusion/ablation\_variant/} 下提供三个消融模型。三者均
+保留 RevIN、DLinear 基分支与直接相加融合，仅残差分支或其有无不同：
+
+\begin{enumerate}
+  \item \textbf{\texttt{woDy}——仅基分支。} 完全移除残差分支，模型退化为
+        RevIN 包裹的 DLinear（4{,}664 参数）。
+  \item \textbf{\texttt{woLSTM}——Transformer 残差。} 残差分支保留单层
+        Transformer 编码器（4 头、FFN $4d$、dropout 0.3），去掉 LSTM
+        （19{,}988 参数）。
+  \item \textbf{\texttt{woTransformer}——LSTM 残差。} 残差分支保留 LSTM，
+        去掉 Transformer（11{,}988 参数）。
+\end{enumerate}
+
+作为参考，完整的 DeReFusion 残差分支（LSTM $\rightarrow$ Transformer）约有
+28k 参数。
+
+\subsection{受控协议}
+
+每次运行使用与复现基线完全相同的协议，不作任何改动：按时间顺序 70/10/20 切分；
+StandardScaler 仅在训练集上拟合；每个训练模型都启用 RevIN；多变量输入、单目标
+输出（MS；目标为 \texttt{Close}）；回看窗口 $L{=}96$；标签长度 48；Adam，
+学习率 $10^{-4}$，批大小 32，MSE 损失；余弦调度；基于验证 MSE 的早停（patience 5）；
+约 30 个 epoch；种子 2021；CPU 执行。指标为 MSE、MAE、RMSE、MAPE、MSPE、$R^2$，
+均在归一化序列上计算。
+
+实验网格为 3 个变体 $\times$ 2 个资产 $=6$ 次运行，外加一次校准运行，共七次。
+
+\section{环境与校准}
+
+全部运行在单台 Windows 机器上、纯 CPU 版 PyTorch 下执行，不使用 WSL、不使用 GPU。
+表~\ref{tab:config} 列出共享配置。
+
+\begin{table}[H]
+\centering
+\caption{全部消融运行的共享配置。}
+\label{tab:config}
+\begin{tabular}{ll}
+\toprule
+参数 & 取值 \\
+\midrule
+回看窗口 $L$ / 标签长度 & 96 / 48 \\
+预测步长 $T$ & 24 \\
+输入通道 / 目标 & 4（OHLC）/ Close \\
+$d_{\mathrm{model}}$ & 32 \\
+移动平均核 $k$ & 25 \\
+残差 Transformer / LSTM & 各 1 层（4 头、FFN $4d$） \\
+Dropout & 0.3 \\
+优化器 / 学习率 & Adam / $1{\times}10^{-4}$ \\
+批大小 / 损失 & 32 / MSE \\
+调度 & 余弦 \\
+早停 & patience 5（验证 MSE） \\
+随机种子 & 2021 \\
+设备 & CPU \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{校准运行。} 按照回执协议，先执行一次已知参考答案的
+\texttt{revin-DLinear} 基线：GSPC、$T{=}24$、种子 2021。实测 MSE 为
+\textbf{0.070065}，参考值为 0.07007，相差 $6\times10^{-6}$，远在接受区间
+0.066--0.074 之内。环境因此确认正确，下述消融结果可与参考表直接对比。
+
+\section{结果}
+
+\subsection{实测指标}
+
+表~\ref{tab:main} 报告七次实际运行。全部数值均在归一化序列上计算，与论文约定
+一致；每个资产组内 MSE 最优者加粗。
+
+\begin{table}[H]
+\centering
+\caption{消融结果，全部为本机实际运行（$T{=}24$，种子 2021，CPU）。每个资产组内
+MSE 最优者加粗。MAPE/MSPE 单位为百分数。}
+\label{tab:main}
+\small
+\begin{tabular}{llcccccc}
+\toprule
+资产 & 模型 & MSE & MAE & RMSE & MAPE & $R^2$ & 参数量 \\
+\midrule
+GSPC   & \texttt{woLSTM}        & \textbf{0.06150} & 0.18714 & 0.24799 & 5.80 & 0.8708 & 19{,}988 \\
+GSPC   & \texttt{woTransformer} & 0.06897 & 0.20742 & 0.26262 & 6.36 & 0.8551 & 11{,}988 \\
+GSPC   & \texttt{revin-DLinear} & 0.07007 & 0.21356 & 0.26470 & 6.52 & 0.8528 & 4{,}664 \\
+GSPC   & \texttt{woDy}          & 0.07586 & 0.21988 & 0.27543 & 6.71 & 0.8406 & 4{,}664 \\
+\midrule
+BTCUSD & \texttt{woLSTM}        & \textbf{0.22178} & 0.36189 & 0.47094 & 9.32 & 0.8734 & 19{,}988 \\
+BTCUSD & \texttt{woTransformer} & 0.22942 & 0.36869 & 0.47898 & 9.45 & 0.8690 & 11{,}988 \\
+BTCUSD & \texttt{woDy}          & 0.23727 & 0.37389 & 0.48711 & 9.58 & 0.8645 & 4{,}664 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{与完整模型的对比}
+
+表~\ref{tab:ref} 将每个资产上最优的消融变体与完整 DeReFusion 及线性基线并列。
+完整模型与基线的参考值由合作方在同一数据与协议下报告，此处引用以作对比，并非
+本工作重新执行。
+
+\begin{table}[H]
+\centering
+\caption{最优消融 与 参考完整模型 / 线性基线对比（$T{=}24$，种子 2021）。
+MSE 越低越好。}
+\label{tab:ref}
+\begin{tabular}{llcc}
+\toprule
+资产 & 模型 & MSE & $R^2$ \\
+\midrule
+GSPC   & \textbf{woLSTM}（本机）      & \textbf{0.06150} & 0.8708 \\
+GSPC   & DeReFusion（参考）            & 0.06230 & --- \\
+GSPC   & revin-DLinear（本机）         & 0.07007 & 0.8528 \\
+\midrule
+BTCUSD & DeReFusion（参考）            & 0.21797 & --- \\
+BTCUSD & \textbf{woLSTM}（本机）      & \textbf{0.22178} & 0.8734 \\
+BTCUSD & revin-DLinear（参考）         & 0.22322 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{figs/woLSTM_gspc/fig_dashboard.png}
+\caption{最优消融变体 \texttt{woLSTM} 在 GSPC、$T{=}24$ 上的复现看板
+（六指标雷达、误差分析、误差热力图）。}
+\label{fig:dash}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{figs/woLSTM_gspc/fig_prediction_curves.png}
+\caption{\texttt{woLSTM}，GSPC，$T{=}24$：真值 vs.\ 预测窗口。}
+\label{fig:curves}
+\end{figure}
+
+\section{分析与发现}
+
+\subsection{发现一：在 GSPC 上，LSTM 并非承重组件}
+
+表~\ref{tab:main} 中最清晰的结果是：去掉 LSTM 反而\emph{改善}了 GSPC——
+\texttt{woLSTM} 达到 MSE 0.06150，优于完整模型的 0.06230，也优于其余所有变体。
+GSPC 上呈现三点排序：
+
+\begin{equation}
+\texttt{woLSTM} \;<\; \texttt{woTransformer} \;<\; \texttt{revin-DLinear} \;\approx\; \texttt{woDy}.
+\end{equation}
+
+按组件解读：Transformer 对残差分支有正向贡献（相对 \texttt{woLSTM}，去掉它损失
+0.0075 MSE），而 LSTM 贡献为负——把它加回来反而略微抬高 MSE。在近似随机游走的
+股指上，LSTM 的局部时序记忆在此样本量下更像是拟合噪声而非信号。
+
+这是一个负面结果，如实报告：消融并未显示每个组件都有益。在 BTCUSD 上图景反转
+（见 \S\ref{sec:analysis-C}），可见 LSTM 的负贡献是资产相关的，而非普遍规律。
+
+\subsection{发现二：\texttt{woDy} 消融被权重初始化混淆}
+\label{sec:analysis-B}
+
+\texttt{woDy} 本意是"纯基分支"消融，而按其构造，其前向计算与
+\texttt{revin-DLinear} 基线完全相同：RevIN 归一化、移动平均分解、两个线性映射、
+相加、RevIN 反归一化。两者的参数量都恰为 4{,}664。然而在 GSPC 上，二者的 MSE
+相差 8\%（0.07586 对 0.07007）。
+
+对两份实现的检查定位了成因。\texttt{revin-DLinear} 遵循 DLinear 论文的约定，
+把两个线性层初始化为一律取平均的核：
+
+\begin{equation}
+W_{\text{se}}, W_{\text{tr}} \;\leftarrow\; \tfrac{1}{L}\,\mathbf{1}_{T\times L},
+\end{equation}
+
+这使模型从"朴素移动平均外推"起步。\texttt{woDy} 对同样的层使用 PyTorch 默认的
+Kaiming 均匀初始化。架构相同、参数量相同，起点不同——最优点也因此显著不同。
+
+实际后果是：\texttt{woDy} \emph{并非}残差分支贡献的干净度量；它与完整模型之间
+0.07586 的差距，混合了"移除残差分支"与"丢失初始化约定"两件事。干净的仅基分支
+消融必须沿用 DLinear 初始化；我们将其作为正确性问题标出，而不作为组件发现报告。
+
+\subsection{发现三：组件价值依赖资产}
+\label{sec:analysis-C}
+
+在 BTCUSD 上排序不同：\texttt{woLSTM} 仍居消融之首，但此时完整模型胜出——
+DeReFusion 0.21797 优于 \texttt{woLSTM} 0.22178，后者又优于基线 0.22322。在
+GSPC 上有害的 LSTM，在 BTCUSD 上有益——这与该资产动态更少随机游走、因而携带
+可学习的时序结构相一致。
+
+跨两个资产看，"仅 Transformer"变体比"仅 LSTM"变体更稳定；在两者并存的场合，
+"仅 LSTM"残差始终是两种残差设计中最弱的一个。残差分支的价值真实存在，但以资产
+为条件——这正是结构感知路由所要应对的情形。
+
+\subsection{参数效率}
+
+参数量与精度不同步。\texttt{woLSTM}（19{,}988 参数）在两个资产上都优于
+\texttt{woTransformer}（11{,}988）与 \texttt{woDy}（4{,}664），但排序并非随规模
+单调：\texttt{woDy} 与基线参数量相同却表现更差，原因正是上述混淆。在残差设计
+内部，更大的变体在两个资产上均胜出。
+
+\section{结论与下一步}
+
+我们在 GSPC 与 BTCUSD 上、$T{=}24$、种子 2021，执行了七次 DeReFusion 组件消融。
+由此得出三点结论。
+
+\begin{enumerate}
+  \item LSTM 并非普遍承重。去掉它改善 GSPC、却损害 BTCUSD，可见残差分支的价值
+        依赖资产。
+  \item \texttt{woDy} 变体被权重初始化混淆，不能作为残差分支贡献的干净度量。
+        修正方法是在该消融中恢复 DLinear 的 $1/L$ 初始化。
+  \item "仅 Transformer"残差在两个资产上均为最优消融，说明在此数据规模下它是
+        更稳健的残差设计。
+\end{enumerate}
+
+\paragraph{下一步。} 用 DLinear 初始化重跑 \texttt{woDy}，以获得无混淆的仅基分支
+数值；将网格扩展到其余步长（$T\in\{1,7,12,36\}$）与更多资产；并增加第二个随机
+种子，以把 GSPC 上两处极为接近的比较（\texttt{woLSTM} 与完整模型，差距 1.3\%）
+与种子噪声区分开。
+
+\section*{致谢}
+
+消融模型、数据集与训练框架均来自 DeReFusion 仓库，以 MIT 许可证发布。
+
+\begin{thebibliography}{9}
+
+\bibitem{derefusion}
+C.-C. Hsieh, M.-Y. Chen,
+DeReFusion: A controlled comparison of soft computing fusion strategies for
+financial time series forecasting via a decomposition-residual architecture,
+Applied Soft Computing 203 (2026) 116252.
+
+\bibitem{kim2022revin}
+T. Kim, J. Kim, Y. Tae, C. Park, J. Choi, G. Choo,
+Reversible instance normalization for accurate time-series forecasting
+against distribution shift, in: ICLR, 2022.
+
+\bibitem{zeng2023dlinear}
+A. Zeng, M. Chen, L. Zhang, Q. Xu,
+Are transformers effective for time series forecasting?, in: AAAI, 2023.
+
+\end{thebibliography}
+
+\end{document}

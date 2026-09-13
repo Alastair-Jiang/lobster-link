@@ -1,0 +1,24 @@
+{
+  "provenance": "geng local machine, 2026-09-12; extracted 2026-09-13 for repo 005-T001-evidence.md",
+  "metric_order": ["mae", "mse", "rmse", "mape", "mspe", "r2"],
+  "metric_order_source": "exp/exp_long_term_forecasting.py:307",
+  "fixed_hyperparams": {
+    "T": 24, "seed": 2021, "seq_len": 96, "label_len": 48, "d_model": 32,
+    "moving_avg": 25, "epochs": 30, "batch_size": 32, "learning_rate": 0.0001,
+    "patience": 5, "lradj": "cosine", "features": "MS", "target": "Close", "freq": "b"
+  },
+  "runs": [
+    {"id": 1, "asset": "GSPC",   "model": "DeReFusion-woDy",         "metrics": {"mae": 0.219879, "mse": 0.075862, "rmse": 0.275431, "mape": 0.067101, "mspe": 0.007646, "r2": 0.840571}, "params": 4664,  "flag": "CONFOUNDED_BY_INIT", "lane": 0, "start": "2026-09-12T02:16:22+08:00", "end": "2026-09-12T10:58:44+08:00"},
+    {"id": 2, "asset": "GSPC",   "model": "DeReFusion-woLSTM",       "metrics": {"mae": 0.187144, "mse": 0.061497, "rmse": 0.247986, "mape": 0.057963, "mspe": 0.006515, "r2": 0.870760}, "params": 19988, "flag": "BEATS_FULL_MODEL_1.29PCT", "lane": 1, "start": "2026-09-12T02:16:24+08:00", "end": "2026-09-12T10:19:41+08:00"},
+    {"id": 3, "asset": "GSPC",   "model": "DeReFusion-woTransformer","metrics": {"mae": 0.207416, "mse": 0.068972, "rmse": 0.262624, "mape": 0.063630, "mspe": 0.007045, "r2": 0.855052}, "params": 11988, "lane": 0, "start": "2026-09-12T10:23:40+08:00", "end": "2026-09-12T11:30:02+08:00"},
+    {"id": 4, "asset": "BTCUSD", "model": "DeReFusion-woDy",         "metrics": {"mae": 0.373887, "mse": 0.237274, "rmse": 0.487108, "mape": 0.095772, "mspe": 0.015827, "r2": 0.864509}, "params": 4664,  "flag": "CONFOUNDED_BY_INIT", "lane": 1, "start": "2026-09-12T10:19:41+08:00", "end": "2026-09-12T11:15:17+08:00"},
+    {"id": 5, "asset": "BTCUSD", "model": "DeReFusion-woLSTM",       "metrics": {"mae": 0.361894, "mse": 0.221780, "rmse": 0.470935, "mape": 0.093151, "mspe": 0.015039, "r2": 0.873356}, "params": 19988, "lane": 0, "start": "2026-09-12T11:30:02+08:00", "end": "2026-09-12T12:36:01+08:00"},
+    {"id": 6, "asset": "BTCUSD", "model": "DeReFusion-woTransformer","metrics": {"mae": 0.368686, "mse": 0.229418, "rmse": 0.478976, "mape": 0.094474, "mspe": 0.015389, "r2": 0.868995}, "params": 11988, "lane": 1, "start": "2026-09-12T11:15:17+08:00", "end": "2026-09-12T12:22:35+08:00"},
+    {"id": 7, "asset": "GSPC",   "model": "revin-DLinear",           "metrics": {"mae": 0.213557, "mse": 0.070065, "rmse": 0.264699, "mape": 0.065237, "mspe": 0.007115, "r2": 0.852753}, "params": 4664,  "flag": "ENV_CALIBRATION", "acceptance_band": [0.066, 0.074], "stop": "2026-09-12T02:15:21+08:00"}
+  ],
+  "cited_reference_values_not_reproduced_locally": [
+    {"asset": "GSPC",   "model": "DeReFusion (full)", "mse": 0.06230, "attribution": "Dongxu Jiang"},
+    {"asset": "BTCUSD", "model": "DeReFusion (full)", "mse": 0.21797, "attribution": "Dongxu Jiang"},
+    {"asset": "BTCUSD", "model": "revin-DLinear",     "mse": 0.22322, "attribution": "Dongxu Jiang"}
+  ]
+}

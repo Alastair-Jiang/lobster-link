@@ -1,0 +1,344 @@
+%% DeReFusion Ablation Study Report (English, IEEEtran conference, two-column)
+%% Compile: pdflatex main_ieee_en.tex  (run twice for references)
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{microtype}
+
+\begin{document}
+
+\title{DeReFusion Ablation Study Report: Component Contributions and a\\
+Weight-Initialization Confound}
+
+\author{
+\IEEEauthorblockN{Geng}
+\IEEEauthorblockA{Applied Soft Computing study project\\
+Email: gengyifu686@users.noreply.github.com}
+}
+
+\maketitle
+
+\begin{abstract}
+This report documents a controlled component ablation of the DeReFusion
+forecasting framework. Three ablation variants---\texttt{woDy} (base branch
+only), \texttt{woLSTM} (Transformer-only residual), and
+\texttt{woTransformer} (LSTM-only residual)---are evaluated on two assets
+(S\&P~500 index and BTC/USD) at horizon $T{=}24$, seed 2021, under the
+protocol of the accompanying reproduction study. Seven runs are reported:
+the three variants on each of two assets, plus a \texttt{revin-DLinear}
+environment-calibration run whose result (MSE 0.07007) matches the reference
+value exactly. Three findings stand out. First, the LSTM is the dominant
+component of the residual branch: removing it \emph{improves} the model on
+GSPC (0.06150 vs.\ 0.06230) and the Transformer-only variant is the best of
+the three on both assets. Second, the \texttt{woDy} ablation is confounded:
+it differs from the \texttt{revin-DLinear} baseline not by removing a
+component but by dropping the DLinear weight-initialization convention, and
+this alone accounts for an 8\% MSE gap at identical parameter count. Third,
+component value is asset-dependent: the full hybrid wins on BTC/USD while
+the LSTM-free variant wins on GSPC. All seven results are reproduced from
+the official code on CPU with a single seed.
+\end{abstract}
+
+\begin{IEEEkeywords}
+financial time series forecasting, ablation study, DeReFusion,
+decomposition--residual architecture, weight initialization,
+reversible instance normalization
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+DeReFusion combines a linear decomposition base branch (DLinear) with a
+learned LSTM--Transformer residual branch under direct additive fusion,
+wrapped in Reversible Instance Normalization (RevIN). The accompanying
+reproduction study establishes the pipeline and its central qualitative
+claim; this report isolates the question that follows immediately: which
+components of the residual branch actually carry the model, and what does
+each removal cost?
+
+The study is deliberately narrow. It covers two assets (GSPC, BTCUSD), one
+horizon ($T{=}24$), one seed (2021), and three ablation variants, for seven
+executed runs in total. Within that scope the results are unambiguous and,
+in one case, counter-intuitive: the most complex ablation is not the best
+one, and one of the ablation variants is not a clean ablation at all.
+
+The remainder is organized as follows. Section~\ref{sec:design} defines the
+variants and the controlled protocol. Section~\ref{sec:setup} records the
+environment and the calibration run. Section~\ref{sec:results} presents the
+measured results. Section~\ref{sec:analysis} interprets them, including the
+initialization confound. Section~\ref{sec:conclusion} concludes and lists
+next steps.
+
+\section{Ablation Design}
+\label{sec:design}
+
+\subsection{Variants}
+
+The repository ships three ablation models under
+\texttt{models/derefusion/ablation\_variant/}. All three retain RevIN, the
+DLinear base branch, and direct additive fusion; they differ only in the
+residual branch or in its removal:
+
+\begin{enumerate}
+  \item \textbf{\texttt{woDy} --- base only.} The residual branch is removed
+        entirely; the model reduces to RevIN-wrapped DLinear
+        (4{,}664 parameters).
+  \item \textbf{\texttt{woLSTM} --- Transformer residual.} The residual
+        branch keeps a single Transformer encoder layer (4 heads, FFN
+        $4d$, dropout 0.3) and drops the LSTM (19{,}988 parameters).
+  \item \textbf{\texttt{woTransformer} --- LSTM residual.} The residual
+        branch keeps the LSTM and drops the Transformer
+        (11{,}988 parameters).
+\end{enumerate}
+
+For reference, the full DeReFusion residual branch (LSTM $\rightarrow$
+Transformer) has ${\sim}28$k parameters.
+
+\subsection{Controlled Protocol}
+
+Every run uses an identical protocol, unchanged from the reproduction
+baseline: chronological 70/10/20 split; StandardScaler fitted on the
+training split only; RevIN on every trained model; multivariate input with
+single-target output (MS; target \texttt{Close}); look-back $L{=}96$;
+label length 48; Adam, learning rate $10^{-4}$, batch size 32, MSE loss;
+cosine schedule; early stopping with patience 5 on validation MSE;
+${\sim}30$ epochs; seed 2021; CPU execution. Metrics are MSE, MAE, RMSE,
+MAPE, MSPE, and $R^2$, computed on the normalized series.
+
+The grid is $3$ variants $\times$ $2$ assets $=6$ runs, plus one
+calibration run (Section~\ref{sec:setup}), for seven runs total.
+
+\section{Environment and Calibration}
+\label{sec:setup}
+
+All runs execute on a single Windows machine with a CPU-only PyTorch build,
+no WSL, no GPU. Table~\ref{tab:config} lists the shared configuration.
+
+\begin{table}[!t]
+\centering
+\caption{Shared configuration of all ablation runs.}
+\label{tab:config}
+\small
+\begin{tabular}{@{}p{2.9cm}p{4.0cm}@{}}
+\toprule
+Parameter & Value \\
+\midrule
+Look-back $L$ / label len. & 96 / 48 \\
+Horizon $T$ & 24 \\
+Input channels / target & 4 (OHLC) / Close \\
+$d_{\mathrm{model}}$ & 32 \\
+Moving-average kernel $k$ & 25 \\
+Residual Transformer / LSTM & 1 layer each (4 heads, FFN $4d$) \\
+Dropout & 0.3 \\
+Optimizer / learning rate & Adam / $1{\times}10^{-4}$ \\
+Batch size / loss & 32 / MSE \\
+Schedule & cosine \\
+Early stopping & patience 5 (val.\ MSE) \\
+Random seed & 2021 \\
+Device & CPU \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Calibration run.} Following the receipt protocol, a
+\texttt{revin-DLinear} baseline with a known reference answer was executed
+first: GSPC, $T{=}24$, seed 2021. The measured MSE is
+\textbf{0.070065}, against a reference of 0.07007 --- a difference of
+$6\times10^{-6}$, far inside the accepted tolerance band of 0.066--0.074.
+The environment is therefore confirmed correct, and the ablation results
+below can be compared directly with the reference table.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Measured Metrics}
+
+Table~\ref{tab:main} reports the seven executed runs. All values are
+computed on the normalized series, consistent with the paper's convention;
+the best MSE within each asset group is bold.
+
+\begin{table*}[!t]
+\centering
+\caption{Ablation results, all runs executed locally ($T{=}24$, seed 2021,
+CPU). Best MSE per asset group in bold. MAPE/MSPE in percent.}
+\label{tab:main}
+\small
+\begin{tabular}{llccccccc}
+\toprule
+Asset & Model & MSE & MAE & RMSE & MAPE (\%) & MSPE (\%) & $R^2$ & Params \\
+\midrule
+GSPC   & \texttt{woLSTM}        & \textbf{0.06150} & 0.18714 & 0.24799 & 5.80 & 0.651 & 0.8708 & 19{,}988 \\
+GSPC   & \texttt{woTransformer} & 0.06897 & 0.20742 & 0.26262 & 6.36 & 0.704 & 0.8551 & 11{,}988 \\
+GSPC   & \texttt{revin-DLinear} & 0.07007 & 0.21356 & 0.26470 & 6.52 & 0.712 & 0.8528 & 4{,}664 \\
+GSPC   & \texttt{woDy}          & 0.07586 & 0.21988 & 0.27543 & 6.71 & 0.765 & 0.8406 & 4{,}664 \\
+\midrule
+BTCUSD & \texttt{woLSTM}        & \textbf{0.22178} & 0.36189 & 0.47094 & 9.32 & 1.504 & 0.8734 & 19{,}988 \\
+BTCUSD & \texttt{woTransformer} & 0.22942 & 0.36869 & 0.47898 & 9.45 & 1.539 & 0.8690 & 11{,}988 \\
+BTCUSD & \texttt{woDy}          & 0.23727 & 0.37389 & 0.48711 & 9.58 & 1.583 & 0.8645 & 4{,}664 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Comparison With the Full Model}
+
+Table~\ref{tab:ref} places the best ablation per asset against the full
+DeReFusion model and the linear baseline. The reference values for the full
+model and the baseline are reported by the collaborating study on the same
+data and protocol; they are reproduced here for comparison and are not
+re-executed in this work.
+
+\begin{table}[!t]
+\centering
+\caption{Best ablation vs.\ reference full model and linear baseline
+($T{=}24$, seed 2021). Lower MSE is better.}
+\label{tab:ref}
+\small
+\begin{tabular}{@{}p{1.5cm}p{2.9cm}cc@{}}
+\toprule
+Asset & Model & MSE & $R^2$ \\
+\midrule
+GSPC   & \textbf{woLSTM} (local)   & \textbf{0.06150} & 0.8708 \\
+GSPC   & DeReFusion (reference)    & 0.06230 & --- \\
+GSPC   & revin-DLinear (local)     & 0.07007 & 0.8528 \\
+\midrule
+BTCUSD & DeReFusion (reference)    & 0.21797 & --- \\
+BTCUSD & \textbf{woLSTM} (local)   & \textbf{0.22178} & 0.8734 \\
+BTCUSD & revin-DLinear (ref.)      & 0.22322 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Analysis and Findings}
+\label{sec:analysis}
+
+\subsection{Finding 1: The LSTM Is Not the Component That Carries GSPC}
+
+The clearest result in Table~\ref{tab:main} is that removing the LSTM
+\emph{improves} GSPC: \texttt{woLSTM} reaches MSE 0.06150, better than the
+full model's 0.06230 and better than every other variant. A three-point
+ordering emerges on GSPC:
+
+\begin{equation}
+\texttt{woLSTM} \;<\; \texttt{woTransformer} \;<\; \texttt{revin-DLinear} \;\approx\; \texttt{woDy}.
+\end{equation}
+
+Interpreted component-wise, the Transformer contributes positively to the
+residual branch (its removal costs 0.0075 MSE relative to \texttt{woLSTM}),
+while the LSTM contributes negatively --- adding it back raises MSE slightly.
+On a near-random-walk equity index, the LSTM's local sequential memory
+appears to fit noise rather than signal at this sample size.
+
+This is a negative result and is reported as such: the ablation does not
+show that every component helps. On BTCUSD the picture reverses
+(Section~\ref{sec:analysis-C}), so the negative LSTM contribution is
+asset-specific rather than universal.
+
+\subsection{Finding 2: The \texttt{woDy} Ablation Is Confounded by Initialization}
+\label{sec:analysis-B}
+
+\texttt{woDy} is intended as the pure base-branch ablation, and by
+construction its forward computation is identical to the
+\texttt{revin-DLinear} baseline: RevIN normalize, moving-average
+decomposition, two linear maps, add, RevIN de-normalize. Both models have
+exactly 4{,}664 parameters. Yet on GSPC they differ by 8\% in MSE
+(0.07586 vs.\ 0.07007).
+
+Inspection of the two implementations locates the cause. The
+\texttt{revin-DLinear} model follows the DLinear paper's convention and
+initializes both linear layers to the uniform averaging kernel:
+
+\begin{equation}
+W_{\text{se}}, W_{\text{tr}} \;\leftarrow\; \tfrac{1}{L}\,\mathbf{1}_{T\times L},
+\end{equation}
+
+which makes the model start as a naive moving-average extrapolator.
+\texttt{woDy} uses PyTorch's default Kaiming-uniform initialization for the
+same layers. Same architecture, same parameter count, different starting
+point --- and a materially different optimum.
+
+The practical consequence is that \texttt{woDy} is \emph{not} a clean
+measure of the residual branch's contribution: its 0.07586 gap to the full
+model mixes the removal of the residual branch with the loss of the
+initialization convention. A clean base-only ablation must reuse the
+DLinear initialization; we flag this as a correctness issue rather than
+report it as a component finding.
+
+\subsection{Finding 3: Component Value Is Asset-Dependent}
+\label{sec:analysis-C}
+
+On BTCUSD the ordering is different. \texttt{woLSTM} still leads the
+ablations, but now the full model wins: DeReFusion at 0.21797 beats
+\texttt{woLSTM} at 0.22178, which in turn beats the baseline at 0.22322.
+The LSTM, which hurt on GSPC, helps on BTCUSD --- consistent with an asset
+whose dynamics are less random-walk-like and therefore carry learnable
+sequential structure.
+
+Across both assets the Transformer-only variant is more stable than the
+LSTM-only variant, and the LSTM-only residual is consistently the weakest
+of the two residual designs where both are present. The residual branch's
+value is thus real but asset-conditioned, which is exactly the regime that
+motivates structure-aware routing.
+
+\subsection{Parameter Efficiency}
+
+Parameter count does not track accuracy. \texttt{woLSTM} (19{,}988
+parameters) beats \texttt{woTransformer} (11{,}988) and \texttt{woDy}
+(4{,}664) on both assets, but the ranking is not monotone in size:
+\texttt{woDy} matches the baseline's parameter count while performing
+worse, because of the confound above. Within the residual designs, the
+larger variant wins on both assets.
+
+\section{Conclusion and Next Steps}
+\label{sec:conclusion}
+
+We executed a seven-run the component ablation of DeReFusion on GSPC and
+BTCUSD at $T{=}24$, seed 2021. Three conclusions follow.
+
+\begin{enumerate}
+  \item The LSTM is not universally load-bearing. Removing it improves
+        GSPC and degrades BTCUSD, so the residual branch's value is
+        asset-dependent.
+  \item The \texttt{woDy} variant is confounded by weight initialization
+        and must not be read as a clean measure of the residual branch's
+        contribution. The fix is to restore the DLinear
+        $1/L$ initialization in the ablation.
+  \item The Transformer-only residual is the best ablation on both assets,
+        suggesting it is the more robust residual design at this data
+        scale.
+\end{enumerate}
+
+\paragraph{Next steps.} Re-run \texttt{woDy} with the DLinear
+initialization to obtain an unconfounded base-only number; extend the grid
+to the remaining horizons ($T\in\{1,7,12,36\}$) and to the additional
+assets; and add a second seed to separate the two very close GSPC
+comparisons (\texttt{woLSTM} vs.\ full model, a 1.3\% gap) from seed noise.
+
+\section*{Acknowledgment}
+
+The ablation models, the dataset, and the training harness come from the
+DeReFusion repository, released under an MIT license.
+
+\begin{thebibliography}{9}
+
+\bibitem{derefusion}
+C.-C. Hsieh and M.-Y. Chen,
+``DeReFusion: A controlled comparison of soft computing fusion strategies
+for financial time series forecasting via a decomposition-residual
+architecture,'' \emph{Applied Soft Computing}, vol. 203, p. 116252, 2026,
+doi: 10.1016/j.asoc.2026.116252.
+
+\bibitem{kim2022revin}
+T. Kim \emph{et al.}, ``Reversible instance normalization for accurate
+time-series forecasting against distribution shift,'' in \emph{Proc. ICLR},
+2022.
+
+\bibitem{zeng2023dlinear}
+A. Zeng, M. Chen, L. Zhang, and Q. Xu, ``Are transformers effective for time
+series forecasting?'' in \emph{Proc. AAAI}, 2023.
+
+\end{thebibliography}
+
+\end{document}
