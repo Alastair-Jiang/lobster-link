@@ -1,0 +1,2 @@
+tag,model,seed,status,wall_clock_min,metrics_mse,metrics_mae,metrics_mspe,pred_sha256,true_sha256,dir,ingested_orphan
+HSI,DeReFusion,2021,ok,,0.1426339149,0.2719493210,73.4919052124,f8fd18259b906468614ea7c75e24a921819e1e0609ccff2f526540352ccbca53,d93fb12e9181d6f2b0f66752f59218cdfede2f4cc3b4eaef11cc7238978303c9,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\HSI_DeReFusion,1

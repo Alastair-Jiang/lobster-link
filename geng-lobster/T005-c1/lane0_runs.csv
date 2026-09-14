@@ -1,0 +1,2 @@
+tag,model,seed,status,wall_clock_min,metrics_mse,metrics_mae,metrics_mspe,pred_sha256,true_sha256,dir,ingested_orphan
+AAPL,DeReFusion,2021,ok,,0.0843646675,0.2230605185,0.0120858159,cda7693d8edbf88037f2c645ed8f73b408657d87247ebbd5ccdd5b35adb1c102,3b60605d2537bf983f5063d7447ed9d8698ee548185f47bf64ddfe8d11154070,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\AAPL_DeReFusion,1
