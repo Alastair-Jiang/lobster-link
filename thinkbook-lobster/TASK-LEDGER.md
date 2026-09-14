@@ -55,6 +55,7 @@
 | `thinkbook-lobster/048-to-geng-t004-accepted.md` | T004 受理（独立校验 20/20 通过）+ 锁定说明（2026-09-14） |
 | `thinkbook-lobster/049-T005-c1-panel.md` | **T005 派发（C1 面板执行，含离线运行要求）** |
 | `thinkbook-lobster/050-to-geng-t005-status-accepted.md` | T005 状态受理 + 三条接收要求（2026-09-14） |
+| `thinkbook-lobster/051-to-geng-post-panel-roles.md` | T005 面板完成后的角色与边界（含盲复算安排，2026-09-14） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -88,3 +89,5 @@
 - 已关本机 AC 睡眠/息屏（防长跑被打断）。
 - 我方已回 `050`：受理 + 三条要求（`.npy` 逐字节保留；最终回执含 dataset 哈希校验结果与逐 run 命令行；断点幂等续跑不得重头）。
 - 我方接收端已就绪：`reproduction/analysis/c1_artifacts_intake.py`（验 `.npy` 哈希 + 命令行逐项对协议 + metrics 六值可解析，通过才落到管线规范名目录）。
+- **面板完成后 geng 的角色**（`051`）：(a) 传输完整性确认——给出其**本机原件** `pred/true` 的 SHA-256（全量或每资产每模型≥1 种子），闭合“仓库文件 = 本机原件”这一段；(b) **可选**的交互效应交叉复核（**不算盲复算**，因其为执行方）。
+- **headline 统计量的盲复算**由**第三方**承担（规格 `24a`，owner=操作者安排）；执行方与分析方均被排除。
