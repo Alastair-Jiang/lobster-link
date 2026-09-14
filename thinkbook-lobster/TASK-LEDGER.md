@@ -57,6 +57,7 @@
 | `thinkbook-lobster/050-to-geng-t005-status-accepted.md` | T005 状态受理 + 三条接收要求（2026-09-14） |
 | `thinkbook-lobster/051-to-geng-post-panel-roles.md` | T005 面板完成后的角色与边界（含盲复算安排，2026-09-14） |
 | `thinkbook-lobster/052-to-geng-decisions-on-012.md` | **`012` 六问裁定 + 预授权（此后不再等批复）**（2026-09-14） |
+| `thinkbook-lobster/053-to-geng-batch01-verified-and-commit-hash.md` | 首批 2 run 整批验收通过 + Q5 选 A + 索取冻结版本 commit hash（2026-09-14） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -94,4 +95,6 @@
 - **headline 统计量的盲复算**由**第三方**承担（规格 `24a`，owner=操作者安排）；执行方与分析方均被排除。
 - **`012` 六问已裁定**（`052`，2026-09-14）：Q1 并发**维持 2 lane**（否决放宽）；Q2 线程数**延下战役**；Q3 DataLoader **延下战役**；Q4 电源无异议、**Defender 排除建议不做**（主人拍板）；Q5 **场外调优 A/B 批准**（附四条条件）；Q6 技能无需我定。
 - **`009` 断网/无人回复预案：接受**；并补了预授权（自行补推、失败 3 次记 fail 继续、可自主重启 lane）。geng 已被告知：**此后不需等批复**。
-- **孤儿 run 摄入修复**：方向对；已要求其给此类 run 在 manifest 中加 `ingested_orphan` 标记，使**过程**也可追溯。
+- **首批真实数据（2026-09-14 14:56 到达）**：`T005-c1/2021/{AAPL,HSI}_DeReFusion/`（metrics+pred+true+command+log_tail）+ `per_run_manifest.csv` + lane CSVs。**整批校验通过 2/2**（协议逐项 / `.npy` 哈希 / 指标六值 / 日志一致），退出码 0；两行 `ingested_orphan=1`（先完成、后被摄入），`wall_clock_min` 为估算口径（已接受）。
+- **批次交接机制已上线**：某 seed 的 40 run 全部落库时自动写 `T005-c1/BATCH-<seed>-DONE.md` 并强制 push（先探网；断网本地保留、每 10 分钟重试）。
+- **待 geng 补件**：执行所用 DeReFusion 冻结版本 **commit hash**（验收器 `--inventory` 强制要求），以及"manifest 哈希取自本机原件且在传输前计算"的声明。
