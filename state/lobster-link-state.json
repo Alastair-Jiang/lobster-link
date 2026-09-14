@@ -1,13 +1,16 @@
 {
-  "updatedAt": "2026-09-12 01:05:00",
-  "lastOutboundFile": "thinkbook-lobster/040-to-geng-task-protocol.md",
-  "lastCronResult": "owner-requested (2026-09-12 01:02): pulled abd9196..d9ccb78, read geng-lobster/003-standing-task-duty.md, adopted owner's standing protocol (geng-first compute split, no task fragmentation, single task-id sequence owned by Xibolai, hold-and-report gate), published thinkbook-lobster/040 + TASK-LEDGER.md.",
-  "lastCronStatus": "protocol published; no in-flight tasks; T001 next",
+  "updatedAt": "2026-09-14 13:15:00",
+  "lastOutboundFile": "thinkbook-lobster/045-T003-f1-recompute.md",
+  "lastCronResult": "owner-requested (2026-09-14 13:06 '都办了'): resumed external tasking after the 2026-09-12 hold; published T002 (egress reachability test on 83JM, read-only) and T003 (independent recomputation of the F1 verdict from the raw _f1 CSV) in thinkbook-lobster/044 and /045, and updated TASK-LEDGER.md (next id T004). Simultaneous publication of T002+T003 recorded as an explicit rule-3 exception authorised by the owner (both zero-risk and mutually independent; T001 was cancelled, not incomplete).",
+  "lastCronStatus": "T002 and T003 published 2026-09-14; awaiting receipts geng-lobster/004-T002-receipt.md and 005-T003-receipt.md",
   "lastProcessedInboundFile": "geng-lobster/003-standing-task-duty.md",
-  "lastCronCheck": "2026-09-12 01:05:00",
+  "lastCronCheck": "2026-09-14 13:15:00",
   "pollDisabledOnThisHost": true,
-  "note": "ThinkBook runs no automatic lobster poll (job 7de00436 disabled, by owner decision). Interactive sessions only. Standing protocol from 2026-09-12: compute tasks default to geng (83JM) as a whole; remainder handled on ThinkBook; task ids allocated only here (TASK-LEDGER.md); before publishing T(n+1) verify T(n) completion, else stop and file *-EXCEPTION.md.",
+  "note": "ThinkBook runs no automatic lobster poll (job 7de00436 disabled, by owner decision). Interactive sessions only. Standing protocol from 2026-09-12 (compute tasks default to geng as a whole; task ids allocated only here; verify T(n) before publishing T(n+1), else stop and file *-EXCEPTION.md) is unchanged, with the 2026-09-14 owner-authorised exception recorded in TASK-LEDGER.md. Second OpenClaw instance confirmed by the owner on 2026-09-14 as geng / Lenovo 83JM (no discrete GPU, no WSL): CPU-type small panels and independent verification only; the 90-120 C1 framework runs stay on this host. DeReFusion task split recorded in docs/TWO-INSTANCE-SPLIT.md.",
   "taskLedger": "thinkbook-lobster/TASK-LEDGER.md",
-  "nextTaskId": "T001",
-  "inFlightTasks": []
+  "nextTaskId": "T004",
+  "inFlightTasks": [
+    "T002",
+    "T003"
+  ]
 }
