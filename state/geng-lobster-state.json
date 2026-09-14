@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-09-14 14:07:00",
+  "updatedAt": "2026-09-14 14:09:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
   "lastProcessedInboundFile": "thinkbook-lobster/050-to-geng-t005-status-accepted.md",
   "lastOutboundFile": "geng-lobster/010-to-thinkbook-concurrency-question.md",
-  "lastCronCheck": "2026-09-14 13:42",
-  "lastCronStatus": "ok — 048（T004 受理）/049（T005 派发）已读；T005 数据闸门通过并已开跑，状态回帖 008 已写",
-  "lastCronNote": "T005 是本轮关键路径（阻塞 C1）；120 run、2 lane、离线可跑。回执序号 007（希伯来指定）。状态回帖用 008（007 留给最终回执）。",
-  "lastCronResult": "T005 执行中：(1) 硬闸门通过——T004 的 20 CSV 逐字节拷入 DeReFusion/dataset/ 为 <TAG>-2016-2025.csv，逐一重算 SHA-256 与 23_c1_preregistration.md §8 锁定表比对 20/20 一致，行数一致，未改动既有数据；(2) 跑批器 t005_lane.ps1 建成（2 lane/幂等/进程树 CPU 判活 stall 监控/每 run 留 metrics+pred+true+命令行+日志尾）；(3) 13:36 两路启动（LANE0 AAPL_DeReFusion_seed2021、LANE1 HSI_DeReFusion_seed2021），健康；(4) 常驻检查点 t005_checkpoint.py 每 10 分钟合并 manifest，每满 40 run 或每 6h 自动 push；(5) 挂自动化 T005 巡检（每 3h）。进度 0/120，预计 60-120h。",
+  "lastCronCheck": "2026-09-14 14:06",
+  "lastCronStatus": "常规唤醒：无新入站（046-050 均已受理）；T005 巡检通过——双 lane 在跑、看门狗与检查点进程存活、checkpoint 持续推进；进度 0/120（单 run 约 60min，属正常）。本轮另修复一处会造成静默缺口的缺陷。",
+  "lastCronNote": "本轮为新入站为空时的常规巡检（050 已受理，不需要回复），只更新本 state、不发消息。T005：LANE0=AAPL_DeReFusion_seed2021、LANE1=HSI_DeReFusion_seed2021 在跑，checkpoint.pth 14:01/14:03 仍在写；看门狗(t005_watchdog.ps1)与常驻检查点(t005_checkpoint.py)存活。0/120 属正常——单 run 约 60min。",
+  "lastCronResult": "【发现并修复真实缺陷】13:48 为加载更新后的 t005_lane.ps1 重启了 lane，原 lane 监督进程(47632/37560)随后消亡，两个在跑的 run 成为孤儿；重启后的 lane 命中 SKIP(done) 分支——只写日志，不拷贝产物、也不写 lane CSV，会造成 2/120 静默缺口（违反 050 §二.2「不接受沉默缺口」）。修复：把 t005_lane.ps1 的「已完成」分支改为——若产物齐备但未在任一 lane CSV 中记为 ok，则 INGEST（.npy 逐字节复制 + command.txt + log_tail.txt + pred/true 双 SHA-256 + 写 CSV 行）；新增 New-ArgList / Test-Recorded / Ingest-Task 三个函数，原 ok 分支改为调用 Ingest-Task，DryRun 下只记 WOULD INGEST 不落盘。验证（真跑）：① PowerShell Parser 语法通过；② 用隔离副本（$OUT/$STATUS/$LOGDIR 指向临时目录、TAGS/MODELS/SEEDS 只留 SOX_DeReFusion_seed2021 这一个产物已齐备的任务）实跑：日志出现 INGEST(unrecorded done)，同任务第二次即 SKIP(done)（幂等成立），metrics/pred/true 三个 SHA-256 与源文件全等，CSV 行含 mse/mae/mspe 与双哈希，测试产物已清理；③ 杀掉两个空转的旧 lane(14456/22336)，按看门狗同款方式用修复后脚本重启 lane0/lane1(PID 25520/2460)，两者均已进入 WAIT(duplicate in flight)。备份 t005_lane.ps1.bak-20260914-1410。本轮未改 thinkbook-lobster/、未写 state/lobster-link-state.json。",
   "notes": [
     "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
     "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -29,6 +29,8 @@
     "T005 收尾回执生成器 t005_receipt_gen.py：一条命令产出 007，自动写入 050 要求的三项（dataset 闸门 20/20+SHA-256、每 run command.txt 路径与样例、ok/fail 统计）。已空跑验证（draft，gate=20/20）。注意：007 目前为未跟踪的 draft，收尾时才定稿；checkpoint 的 git add 不含 007。",
     "T005 并发询问（010，已推 262328c）：向希伯来提问是否放宽 049 §三 的「并发上限 2 lane」。只提问、不自改冻结约束；不阻塞，未回则维持 2 lane。我的倾向：维持 2 lane。",
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
-    "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。"
+    "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。",
+    "【待下一轮确认 · T005 孤儿摄入】AAPL_DeReFusion_seed2021 与 HSI_DeReFusion_seed2021 结束后，应由修复后的 INGEST 分支落到 geng-lobster/T005-c1/2021/<TAG>_DeReFusion/ 并写进 lane0/lane1_runs.csv；若届时仍缺这两行，说明修复未生效，需人工摄入（不得沉默缺口）。另记：lane 脚本更新后重启 lane 会带走原 run 的 CPU-stall 监控（run 变孤儿），故以后应尽量在无 run 在飞时再重启 lane。",
+    "【先例记录】本轮入站 046-050 无新增内容需响应；按常规巡检只更新本 state 并 push，保持安静。"
   ]
 }
