@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-14 14:26:00",
+  "updatedAt": "2026-09-14 14:30:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/051-to-geng-post-panel-roles.md",
+  "lastProcessedInboundFile": "thinkbook-lobster/052-to-geng-decisions-on-012.md",
   "lastOutboundFile": "geng-lobster/012-t005-open-questions-consolidated.md",
   "lastCronCheck": "2026-09-14 14:06",
   "lastCronStatus": "常规唤醒：无新入站（046-050 均已受理）；T005 巡检通过——双 lane 在跑、看门狗与检查点进程存活、checkpoint 持续推进；进度 0/120（单 run 约 60min，属正常）。本轮另修复一处会造成静默缺口的缺陷。",
@@ -31,6 +31,8 @@
     "希伯来 051（面板完成后角色与边界）已处理：① 不派 T006 直到 T005 完；② 面板完成后我要做（a）传输完整性确认——给出本机原件 pred/true 的 SHA-256（全量或每资产每模型≥1 个种子），用于闭合「仓库文件 == 本机原件」这一段（他能验仓库 vs manifest，验不到仓库 vs 本机原件）；（b）可选交互效应交叉复核（非盲，不影响验收）。已把（a）写进收尾生成器 t005_receipt_gen.py：新增「传输完整性确认」节，逐 run 重算 results/ 原件与 T005-c1 副本的 SHA-256 并比对，输出一致数。headline 盲复算归第三方（24a）。051 未回答 010（并发）问题——时点交叉，故维持 2 lane 不动。",
     "T005 CPU/NPU 实测（011，已推 514f9e4）：NPU Intel AI Boost 在系统但 torch 无后端（cuda/xpu/mps 均 False）、仅推理，本任务不可用；两个 run 各 14 线程 → 28 线程挤 14 核（超额订阅）；微基准 7 线程/进程比 14 约 +8%；进程创建 0.73/秒（DataLoader spawn 开销）；CPU 均忙 ~64%。结论：瓶颈是开销不是算力；可动项 A(线程)/B(DataLoader) 均属改 harness，不擅自改。",
     "T005 未决问题汇总（012，已推 6f365a4）：主人指示把我这边的悬留问题全部发给希伯来——Q1 并发放宽、Q2 线程数、Q3 DataLoader、Q4 系统层(电源/Defender，最终需主人拍板)、Q5 主战役外调优 A/B、Q6 技能生效(仅告知)。均标注不阻塞，未获批复前现状不变（2 lane/14 线程）。",
+    "希伯来 052（012 六问裁定 + 预授权）已处理：【Q1】并发维持 2 lane（否决放宽）；【Q2】线程数延下战役；【Q3】DataLoader 延下战役（先用 Q5 量化）；【Q4】电源实验侧无异议、Defender 排除建议不做（最终主人拍板）；【Q5】场外调优 A/B 批准（四条件：不碰锁定数据/不产 C1 结果；主战役 per-run 墙钟恶化>10% 或诱发 stall 即停；如实报影响；A/B 数字不得进 C1 证据链）；【Q6】技能无需他定，建议 T005 后再固化。052 另给预授权：网络恢复自行补推、失败 3 次记 fail 不重试更多、可自主重启 lane。052 明确：此后不必等批复，报告是留痕不是请示。",
+    "希伯来 052 §三要求（已落实）：经孤儿摄入路径的 run 必须在 manifest 带标记。已做：t005_lane.ps1 增 Ingest-Task 的 $orphan 参（正常路径 0、孤儿摄入 1），CSV 表头加第 12 列 ingested_orphan；t005_checkpoint.py 的 COLS 同步。两个 lane CSV 已重写为 12 列（当时零数据行，无迁移问题），lane/checkpoint 已重启加载新脚本。当前在跑的两个 run（AAPL/HSI）正是孤儿（原 lane 外壳 13:45/14:28 被杀、run 继续跑），将由新 lane 以 orphan=1 摄入。",
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
     "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。",
     "【待下一轮确认 · T005 孤儿摄入】AAPL_DeReFusion_seed2021 与 HSI_DeReFusion_seed2021 结束后，应由修复后的 INGEST 分支落到 geng-lobster/T005-c1/2021/<TAG>_DeReFusion/ 并写进 lane0/lane1_runs.csv；若届时仍缺这两行，说明修复未生效，需人工摄入（不得沉默缺口）。另记：lane 脚本更新后重启 lane 会带走原 run 的 CPU-stall 监控（run 变孤儿），故以后应尽量在无 run 在飞时再重启 lane。",
