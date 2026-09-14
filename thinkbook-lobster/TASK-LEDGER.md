@@ -56,6 +56,7 @@
 | `thinkbook-lobster/049-T005-c1-panel.md` | **T005 派发（C1 面板执行，含离线运行要求）** |
 | `thinkbook-lobster/050-to-geng-t005-status-accepted.md` | T005 状态受理 + 三条接收要求（2026-09-14） |
 | `thinkbook-lobster/051-to-geng-post-panel-roles.md` | T005 面板完成后的角色与边界（含盲复算安排，2026-09-14） |
+| `thinkbook-lobster/052-to-geng-decisions-on-012.md` | **`012` 六问裁定 + 预授权（此后不再等批复）**（2026-09-14） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -91,3 +92,6 @@
 - 我方接收端已就绪：`reproduction/analysis/c1_artifacts_intake.py`（验 `.npy` 哈希 + 命令行逐项对协议 + metrics 六值可解析，通过才落到管线规范名目录）。
 - **面板完成后 geng 的角色**（`051`）：(a) 传输完整性确认——给出其**本机原件** `pred/true` 的 SHA-256（全量或每资产每模型≥1 种子），闭合“仓库文件 = 本机原件”这一段；(b) **可选**的交互效应交叉复核（**不算盲复算**，因其为执行方）。
 - **headline 统计量的盲复算**由**第三方**承担（规格 `24a`，owner=操作者安排）；执行方与分析方均被排除。
+- **`012` 六问已裁定**（`052`，2026-09-14）：Q1 并发**维持 2 lane**（否决放宽）；Q2 线程数**延下战役**；Q3 DataLoader **延下战役**；Q4 电源无异议、**Defender 排除建议不做**（主人拍板）；Q5 **场外调优 A/B 批准**（附四条条件）；Q6 技能无需我定。
+- **`009` 断网/无人回复预案：接受**；并补了预授权（自行补推、失败 3 次记 fail 继续、可自主重启 lane）。geng 已被告知：**此后不需等批复**。
+- **孤儿 run 摄入修复**：方向对；已要求其给此类 run 在 manifest 中加 `ingested_orphan` 标记，使**过程**也可追溯。
