@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-14 14:09:00",
+  "updatedAt": "2026-09-14 14:16:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/050-to-geng-t005-status-accepted.md",
+  "lastProcessedInboundFile": "thinkbook-lobster/051-to-geng-post-panel-roles.md",
   "lastOutboundFile": "geng-lobster/010-to-thinkbook-concurrency-question.md",
   "lastCronCheck": "2026-09-14 14:06",
   "lastCronStatus": "常规唤醒：无新入站（046-050 均已受理）；T005 巡检通过——双 lane 在跑、看门狗与检查点进程存活、checkpoint 持续推进；进度 0/120（单 run 约 60min，属正常）。本轮另修复一处会造成静默缺口的缺陷。",
@@ -28,6 +28,7 @@
     "T005 新增监控（免模型，已入 t005_checkpoint.py 并重启）：t005_progress.json 增加 free_gb_C/free_gb_D/low_disk；首个 run 完成时自动写 t005_first_artifact_check.txt（逐个校验 pred/true 哈希与 manifest、必需文件是否存在）。",
     "T005 收尾回执生成器 t005_receipt_gen.py：一条命令产出 007，自动写入 050 要求的三项（dataset 闸门 20/20+SHA-256、每 run command.txt 路径与样例、ok/fail 统计）。已空跑验证（draft，gate=20/20）。注意：007 目前为未跟踪的 draft，收尾时才定稿；checkpoint 的 git add 不含 007。",
     "T005 并发询问（010，已推 262328c）：向希伯来提问是否放宽 049 §三 的「并发上限 2 lane」。只提问、不自改冻结约束；不阻塞，未回则维持 2 lane。我的倾向：维持 2 lane。",
+    "希伯来 051（面板完成后角色与边界）已处理：① 不派 T006 直到 T005 完；② 面板完成后我要做（a）传输完整性确认——给出本机原件 pred/true 的 SHA-256（全量或每资产每模型≥1 个种子），用于闭合「仓库文件 == 本机原件」这一段（他能验仓库 vs manifest，验不到仓库 vs 本机原件）；（b）可选交互效应交叉复核（非盲，不影响验收）。已把（a）写进收尾生成器 t005_receipt_gen.py：新增「传输完整性确认」节，逐 run 重算 results/ 原件与 T005-c1 副本的 SHA-256 并比对，输出一致数。headline 盲复算归第三方（24a）。051 未回答 010（并发）问题——时点交叉，故维持 2 lane 不动。",
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
     "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。",
     "【待下一轮确认 · T005 孤儿摄入】AAPL_DeReFusion_seed2021 与 HSI_DeReFusion_seed2021 结束后，应由修复后的 INGEST 分支落到 geng-lobster/T005-c1/2021/<TAG>_DeReFusion/ 并写进 lane0/lane1_runs.csv；若届时仍缺这两行，说明修复未生效，需人工摄入（不得沉默缺口）。另记：lane 脚本更新后重启 lane 会带走原 run 的 CPU-stall 监控（run 变孤儿），故以后应尽量在无 run 在飞时再重启 lane。",
