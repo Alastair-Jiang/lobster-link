@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-09-14 15:45",
+ "updatedAt": "2026-09-14 16:22",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
  "lastProcessedInboundFile": "thinkbook-lobster/054-to-geng-decisions-014-015-016.md",
- "lastOutboundFile": "geng-lobster/017-t005-ab-timing-and-harness-defect.md",
- "lastCronCheck": "2026-09-14 15:45",
- "lastCronStatus": "希伯来 054 已处理并落地：014 首批链路闭合（受理）；015 记功；016 改判——批准受控 3 lane（仅当前 seed 批次；每进程线程保持 14 不变以保数值一致；须逐 run 记墙钟并计 stall 与 2-lane 基线对比；任何一次 stall 或 per-run 墙钟恶化 >10% → 立即回退 2 lane 并如实报数）；批准 Q5 A/B。注：054 3.2 的“提前跑”已被主人裁定覆盖为“跑完再测”（见 017 1）。",
- "lastCronNote": "本轮为常规巡检（只读 + 本 state 更新 + push）。健康：3 lane（lane0/1/2 切片 39/39/42）在跑，4 个逻辑 run.py 在飞（lane0 正等其孤儿重复 AAPL_revin）；checkpoint 15:42:25 在写、watchdog 15:22:39 起存活；60s CPU 采样 11136 +0.33 / 33512 +0.48 / 47152 +0.05 / 36872 +0.92 —— 全部非零，判定在算、无 stall，故不触发 054 3.1 的回退。10s 窗口会把低负载相位误报成静止，判活一律用 >=60s。未改他人目录；未跑 A/B（按主人裁定延后到主战役跑完）；无 stall 故未回退。",
- "lastCronResult": "无新任务；仅更新本 state 并 push。无 stall、无回退、无 A/B 数据产生。",
+ "lastOutboundFile": "geng-lobster/018-t005-rollback-3-to-2-lanes.md",
+ "lastCronCheck": "2026-09-14 16:22",
+ "lastCronStatus": "3-lane 触发 054 3.1 熔断条件：3-lane 窗口(15:22:27-16:14)内 2 次 stall —— lane1 XOM_revin-DLinear_seed2021（15:44:40 进程树 CPU 静止在 105.6s 达 12min，wall 22.17min）、lane2 GBPUSD_DeReFusion_seed2021（16:01:50 静止在 1558.7s 达 12min，wall 39.3min）。已按约立即回退 2 lane（16:14），双侧数字写进 geng-lobster/018。",
+ "lastCronNote": "本轮动作：① 巡检发现 2 次 stall（lane 自身检测、进程树 CPU 判据，非 015 式自我匹配假阳性）；② 按 054 3.1 执行回退：停 watchdog/lane0-2/3 个在飞 run 树/旧 checkpoint，把 t005_watchdog.ps1 的 $LANES_TOTAL 3->2，重启 watchdog；回退后实测 watchdog x1、checkpoint x1、lane0/2 MSFT_DeReFusion、lane1/2 FTSE_DeReFusion、在飞 run=2，无孤儿无 WAIT；③ 修 harness 缺陷：lane.ps1 的 Test-Recorded 原只查 自己CSV+lane0+lane1，3 lane 下 lane2 的 ok 行对 lane0/1 不可见（重复跑风险）-> 改为通配 lane*_runs.csv；④ 写 018 回执并 push。重要交代：15:22-16:03 期间 2 个 2-lane 时代孤儿 run(AAPL_revin/HSI_revin)仍在跑，真实峰值并发是 4 而非 3，故该窗口实测的是'4 路超订'，不能据此判断干净 3 lane 的效率；要测须像 A/B 一样在空闲机器上做。事故记录：回退第一条命令用 CommandLine -like '*t005_watchdog.ps1*' 筛进程时匹配到自身 shell，把自己杀了（015 同类自我匹配教训）；已改为脚本文件执行 + $PID 排除。A/B 仍按主人裁定延后到主战役跑完（017 1）。",
+ "lastCronResult": "3->2 lane 回退已执行并复核；harness 缺陷已修；写 018 并 push。未动他人目录、未写共享 state、无凭据端口、未跑 A/B。",
  "notes": [
   "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
   "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -49,6 +49,12 @@
   "覆盖关系（重要）：054 3.2“A/B 提前跑”被主人裁定覆盖为“跑完再测”，已由 geng-lobster/017 第 1 节记录（干净 A/B 需机器空闲 45-60 分钟；该时点仍赶得上下战役配置决策；成本为零）。3.1（受控 3 lane）仍有效并已执行。",
   "3-lane 落地细节：t005_lane.ps1 支持 LANE n/3 切片（39/39/42）；看门狗与 checkpoint 已同步 3-lane；checkpoint 通配读 lane*_runs.csv 防静默丢行；lane2_runs.csv 已生成。插桩现成：lane CSV 含 wall_clock_min 列；脚本含 STALL_MIN=12min 的进程树 CPU 静止判定并写 status=stall；“回退 2 lane”的熔断动作由我人工执行（未做自动回退），符合 054 3.1 的“立即回退并如实报”。",
   "本轮 15:42-15:45 巡检：3 lane 在跑（lane1 XOM_revin-DLinear_seed2021、lane2 GBPUSD_DeReFusion_seed2021、lane0 等其孤儿 AAPL_revin-DLinear_seed2021 重复），4 个逻辑 run 在飞；60s 进程树 CPU 采样全部非零（+0.33/+0.48/+0.05/+0.92）→ 无 stall，不触发回退。",
-  "待办（均不阻塞，不入 C1 证据链）：① 首个 3-lane run 落库后复算 T3（3-lane 下单 run 墙钟）与 ETA 并回报；② 主战役跑完且机器空闲后，先 A/B dry-run（单 run、2 epochs）端到端验证，再跑四配置正式测量；③ 清理 A/B 试跑在 checkpoints/results 里的 ABDIAG_* 残留（非 C1 资产）。"
+  "待办（均不阻塞，不入 C1 证据链）：① 首个 3-lane run 落库后复算 T3（3-lane 下单 run 墙钟）与 ETA 并回报；② 主战役跑完且机器空闲后，先 A/B dry-run（单 run、2 epochs）端到端验证，再跑四配置正式测量；③ 清理 A/B 试跑在 checkpoints/results 里的 ABDIAG_* 残留（非 C1 资产）。",
+  "【熔断事实】3-lane 窗口(2026-09-14 15:22:27-16:14)出现 2 次 stall，触发 054 3.1 的'任何一次 stall 即立即回退'条款：lane1 XOM_revin-DLinear_seed2021（15:44:40，进程树 CPU 静止 105.6s 达 12min，wall 22.17min）、lane2 GBPUSD_DeReFusion_seed2021（16:01:50，静止 1558.7s 达 12min，wall 39.3min）。两次均由 lane 自身 STALL_MIN=12 判据 kill 树，记 stall 行；Test-Recorded 只认 ok，故不挡 pass 2/3 重试。",
+  "【关键交代】15:22 切 3 lane 时 lane0 正 WAIT 在飞孤儿 AAPL_revin，两个 2-lane 时代孤儿（AAPL_revin/HSI_revin，14:47 起）跑到 16:03 才落地，故 15:22-16:03 真实并发=4（超授权 3）。该窗口实测的是'4 路超订'，不能据此判定干净 3 lane 的效率；要测需在空闲机器上做（与 A/B 同源）。副作用证据：3-lane 发起的 run 单 run 核心占用仅 0.07-0.09（WMT 121s/30min、MSFT 59s/11min、GBPUSD_revin 16s/12min），而正常 2-lane run 约 0.6-0.7 core。",
+  "【回退落地 16:14】t005_watchdog.ps1 $LANES_TOTAL 3->2；停 watchdog/lane0-2/3 个在飞 run 树/旧 checkpoint 后重启 watchdog。复核：watchdog x1（pid 13512 起）、checkpoint x1（14248+child 3644，属正常 venv 启动器父子对，非双实例）、lane0/2 MSFT_DeReFusion（40256）、lane1/2 FTSE_DeReFusion（37228）；在飞 run=2，无孤儿、无 WAIT 循环。被 kill 的 WMT/GBPUSD_revin/MSFT 无输出落盘 -> 幂等重跑。",
+  "【harness 缺陷已修】t005_lane.ps1 的 Test-Recorded 原本硬编码 自身CSV+lane0_runs.csv+lane1_runs.csv；3 lane 下 lane2 记的 ok 对 lane0/lane1 不可见，有重复跑/重复行风险。已改为通配 lane*_runs.csv（2-lane 无影响，为将来重试 3 lane 预备）。",
+  "【操作事故·教训】回退第一条命令用 CommandLine -like '*t005_watchdog.ps1*' 筛进程时，匹配到执行该命令的自有 shell 并把它杀了（与 015 '自我匹配'同类）。纠正写法：把动作写成脚本文件执行（自身命令行不含被匹配模式）+ $PID 排除。今后杀进程一律走脚本文件，不用会出现在凶手自身命令行里的字符串做匹配。",
+  "【与 054 的关系】054 3.1 已执行并熔断回退；054 3.2（A/B 提前）被主人裁定覆盖为'跑完再测'（017 1），维持延后。回退细节与双侧数字见 geng-lobster/018。"
  ]
 }
