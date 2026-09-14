@@ -1,11 +1,12 @@
 {
-  "updatedAt": "2026-09-13 16:53:00",
+  "updatedAt": "2026-09-14 13:28:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/043-to-geng-t001-evidence-and-alert.md",
-  "lastOutboundFile": "geng-lobster/005-T001-evidence.md (71808bc)",
-  "lastCronCheck": "2026-09-13 16:53",
-  "lastCronStatus": "ok — 本轮无新增入站（043 已于 16:45 处理完毕），本地 HEAD == origin/main == 1c1326c，工作区干净", "lastCronNote": "16:49 这次唤醒系 L1 按 16:45 的旧快照（0e4b487）重复 fire；该内容上一轮已消化，未重复回执、未重复写文件。L1 triggerState.lastSha 仍停在 1598b64，待下一轮 L0 取数（~17:00）刷到 1c1326c 后即对齐——新增两个提交作者均为 geng，作者过滤会正确静默、不自激。",
-  "lastCronResult": "2026-09-13 16:36 希伯来提交 043（T001 证据入库请求 + 告警逻辑答复 + woDy 混淆标注要求，非新任务、不占 T 编号）。已按请求产出 geng-lobster/005-T001-evidence.md + T001-artifacts/（7 行指标表含参数量/墙钟窗口、混淆标注 CONFOUNDED_BY_INIT、校准命令、两份报告 PDF/tex、机器可读 metrics_raw.json），未重跑、全部取自 09-12 已有产物。已推送 71808bc。告警逻辑（滚动 60min 内失败≥3 次 + 连败 3 次 + 每日成功率摘要 + 失败退避重试）认同，待改，改完记一行不单独回执。另：更早 16:25 核实 L1 轮询每 30 分钟在评估（triggerEvalCount=37），最后一次真正 fire 为 09-12 18:31；L0 今日 9/50 次 DNS 间歇失败。",
+  "lastProcessedInboundFile": "thinkbook-lobster/045-T003-f1-recompute.md",
+  "lastOutboundFile": "geng-lobster/004-T002-receipt.md + geng-lobster/005-T003-receipt.md",
+  "lastCronCheck": "2026-09-14 13:28",
+  "lastCronStatus": "ok — 本轮处理 T002 + T003（希伯来 09-14 13:11 同时发布，对应 commit 3394353 / 3503a31），两条回执均已写并推送",
+  "lastCronNote": "T002/T003 系主人 09-14 13:06 指示恢复对外派活后同时发布（账本记为例外：零风险、互不依赖）。两条均已完成，非阻塞项。",
+  "lastCronResult": "T002（出口可达性实测）：完成。六端点×两方式全部有结论；Yahoo 走系统代理 HTTP 200 且连续 3/3 稳定、直连 429；Stooq 两方式均只返回 JS 反爬页（非 CSV）。另做 3 次单请求全量程实测：AAPL/^GSPC 各 2514 根（2016-01-04→2025-12-31）、BTC-USD 3654 根，与仓库 dataset 行数吻合 → 结论：该机出口【能】支撑 15-20 资产日线队列，须走系统代理、不可直连。T003（F1 独立复算）：完成。从公开仓库 reproduction/results/operator-regime-capacity_f1.csv（792 行）纯读表复算，先算后比对：裁定【成功】；稳定资产 4/7 = TM(非线性)、DJI/EURUSD/USDJPY(线性)；新反向配对 3 组（TM×各线性）；与 reports/evidence_closure/21_f1_result.md 逐格一致、零差异。自检确认 dMSE=MSE_N-MSE_L 成立（686 行差异全为 float32 精度，比值 1.0000-1.0001）。",
   "notes": [
     "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
     "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号，也不把消息文件序号当任务号。",
@@ -13,8 +14,12 @@
     "git 走 SSH 别名 github-lobster（~/.ssh/config + 专用密钥 id_ed25519_lobster）：本机 github.com:443 被针对性阻断，HTTPS 不可用，SSH 稳定可用。",
     "不写 state/lobster-link-state.json —— 那是希伯来（thinkbook-lobster）的私有状态，共用会覆盖它的 lastProcessedInboundFile。",
     "只写 geng-lobster/ 与本 state 文件；别人目录一律不改。",
-    "T001（DeReFusion 组件消融）状态：2026-09-12 01:08 由希伯来派发，同日 08:52 被其取消（主人指示暂停对外派活），账本记为已取消、不再要求回执。",
+    "T001（DeReFusion 组件消融）状态：2026-09-12 01:08 由希伯来派发，同日 08:52 被其取消（主人指示暂停对外派活），账本记为已取消；证据已于 09-14 由 005-T001-evidence.md 闭合。",
     "T001 实际执行：7 个 run 全部在本机跑完（GSPC+BTCUSD × woDy/woLSTM/woTransformer + 1 环境校准），环境校准 MSE 0.070065 落在验收带 0.066-0.074 内。意外发现：woLSTM 在 GSPC 上反超完整模型（0.06150 < 0.06230）；woDy 消融被权重初始化混淆（与 revin-DLinear 同构同参数量，MSE 差 8%）。",
-    "巡检健康度（2026-09-13 核实）：L0 取数每 15 分钟跑，今日约 18% 因 DNS 间歇失败（含 16:15）；09-12 21:30 -> 09-13 12:07 断 14.6 小时，系机器休眠所致，非任务故障。L1 轮询每 30 分钟评估，仅在确有新入站时唤醒 L2。"
+    "T002（出口可达性实测）状态：2026-09-14 完成，回执 geng-lobster/004-T002-receipt.md。结论：本机出口能取美股行情（走系统代理）；Yahoo q1 经代理 200/直连 429，Yahoo q2 经代理 SSL 断流，Stooq 两方式均 JS 反爬页。队列取数可交本机，须走系统代理并带退避重试。",
+    "T003（F1 独立复算）状态：2026-09-14 完成，回执 geng-lobster/005-T003-receipt.md。裁定成功（4/7 稳定资产、3 组新反向配对），与 21_f1_result.md 逐格一致。复算脚本 f1_recompute.py 留档本机 DeReFusion 目录（未入库）；输入 CSV 带 UTF-8 BOM，须用 utf-8-sig 读。",
+    "编号冲突（待希伯来定夺）：账本指定 T002 回执为 004-、T003 回执为 005-，但 004/005 已被 004-device-info.md、005-T001-evidence.md 占用；两回执按账本路径交付、未覆盖既有文件。",
+    "公开仓库纪律：回执内不写代理端口/内网地址（T002 回执中的本机回环代理已脱敏）。",
+    "巡检健康度（2026-09-13 核实）：L0 取数每 15 分钟跑，今日约 18% 因 DNS 间歇失败；09-12 21:30 -> 09-13 12:07 断 14.6 小时，系机器休眠所致。已把本机 AC 睡眠/息屏超时置为 0（2026-09-14，防长任务再被休眠打断）。L1 轮询每 30 分钟评估，仅在确有新入站时唤醒 L2。"
   ]
 }
