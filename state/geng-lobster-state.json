@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-14 14:53",
+  "updatedAt": "2026-09-14 14:56",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
   "lastProcessedInboundFile": "thinkbook-lobster/052-to-geng-decisions-on-012.md",
-  "lastOutboundFile": "geng-lobster/012-t005-open-questions-consolidated.md",
+  "lastOutboundFile": "geng-lobster/013-t005-batch-handover-live-and-ab-timing.md",
   "lastCronCheck": "2026-09-14 14:36",
   "lastCronStatus": "14:30 轮询：本轮通知的入站（051 + TASK-LEDGER）实为已受理内容——state 已记到 052，051 的边界条款与 052 的六问裁定在 14:23-14:29 已完成并推送（HEAD f0f8179 == origin/main）。无新任务、无待办；T005 双 run 在飞，监护存活，0/120 属正常。本轮只更新 state，不发消息。",
   "lastCronNote": "无新入站，不需要回复。T005：AAPL/HSI 两个孤儿 run（13:36 起，父 shell 已死、run 未中断）仍在跑；checkpoint.pth 持续按 epoch 写入（AAPL 14:28:47、HSI 14:33:24）；watchdog(PID 25112)、t005_checkpoint(PID 11272)、lane0/lane1(37388/16976) 存活，lane 报 WAIT(duplicate in flight) 属预期。lane0/lane1_runs.csv 表头已是 12 列且含 ingested_orphan（052 §三 要求已落地），暂 0 数据行。",
@@ -35,6 +35,7 @@
     "希伯来 052 §三要求（已落实）：经孤儿摄入路径的 run 必须在 manifest 带标记。已做：t005_lane.ps1 增 Ingest-Task 的 $orphan 参（正常路径 0、孤儿摄入 1），CSV 表头加第 12 列 ingested_orphan；t005_checkpoint.py 的 COLS 同步。两个 lane CSV 已重写为 12 列（当时零数据行，无迁移问题），lane/checkpoint 已重启加载新脚本。当前在跑的两个 run（AAPL/HSI）正是孤儿（原 lane 外壳 13:45/14:28 被杀、run 继续跑），将由新 lane 以 orphan=1 摄入。",
     "T005 前 2 个 run 完成并落库（09-14 14:47）：AAPL_DeReFusion_seed2021 与 HSI_DeReFusion_seed2021，均为**孤儿 run**（原 lane 外壳被杀、run 继续跑），由新 lane 以 INGEST orphan=1 摄入。首个产物端到端验收全绿（pred/true 哈希与 manifest 一致、五文件齐备，见 t005_first_artifact_check.txt）。metrics：AAPL mse=0.0843646675 mae=0.2230605185 mspe=0.0120858159；HSI mse=0.1426339149 mae=0.2719493210 mspe=73.4919052124。",
     "T005 批次交付机制（主人 14:50 要求“联网时每完成一整个 seed 批次就交给希伯来并告知”）：t005_checkpoint.py 新增 batches_completed()/write_batch_note()：某 seed 的 40 run 全部落库时→写 BATCH-<seed>-DONE.md + .batch_<seed>_handed_over 标记 + **联网时立即强制 push**；push_if_needed 增 net_ok() 预检与 pull 返回码检查。孤儿摄入行 wall_clock_min 空值由 estimate_wall() 从 results mtime − checkpoints ctime 估算回填（AAPL/HSI 已回填 70.19，口径写进批次交接单）。巡检自动化已升级：每 3h 检查，发现 BATCH-<seed>-DONE.md 且未报告→确认已 push→向主人报告。",
+    "主人指令（2026-09-14 14:54，已写入 USER.md）：**以后有疑问直接问希伯来**，因为主人通过希伯来回复；希伯来即主人的回信通道。因此 013 已把 Q5 调优 A/B 的时机问题改道给希伯来（含默认动作：等 seed2021 闭合后再跑）。今后不再在 chat 里直接向主人提问，均写编号 note 入 geng-lobster/。",
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
     "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。",
     "【待下一轮确认 · T005 孤儿摄入】更新（09-14 14:36 复核）：AAPL_DeReFusion_seed2021 与 HSI_DeReFusion_seed2021 仍在运行中（checkpoint 续写、run.py 存活），尚未产生落行时机 ⇒ 本轮无法判定 INGEST 分支是否生效，顺延至下一轮复核；若届时候选行仍缺这两行，说明修复未生效，需人工摄入（不得沉默缺口）。另实测确认：lane0/lane1_runs.csv 表头已为 12 列并含 ingested_orphan，且 lane 脚本 $OUT 直指 geng-lobster/T005-c1。",
