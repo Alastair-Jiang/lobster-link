@@ -1,2 +1,12 @@
 tag,model,seed,status,wall_clock_min,metrics_mse,metrics_mae,metrics_mspe,pred_sha256,true_sha256,dir,ingested_orphan
 HSI,DeReFusion,2021,ok,,0.1426339149,0.2719493210,73.4919052124,f8fd18259b906468614ea7c75e24a921819e1e0609ccff2f526540352ccbca53,d93fb12e9181d6f2b0f66752f59218cdfede2f4cc3b4eaef11cc7238978303c9,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\HSI_DeReFusion,1
+XOM,revin-DLinear,2021,stall,22.17,,,,,,,0
+HSI,revin-DLinear,2021,ok,,0.1379907876,0.2698225379,49.4645538330,92263d748a78b040b6180aff5dfeacb7c58dc92ec0fc628f1ce05ebb2795c019,d93fb12e9181d6f2b0f66752f59218cdfede2f4cc3b4eaef11cc7238978303c9,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\HSI_revin-DLinear,1
+FTSE,DeReFusion,2021,ok,22.14,0.2162875980,0.3517850637,0.0379254147,29ad0514df70aa756fdb35aecb0b18e4970383cd9690d338052a804e82c9a52c,eb92d5a70620185a8541c0869763fa5e0405a9cd21a42cab830ab43ffa581789,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\FTSE_DeReFusion,0
+FTSE,revin-DLinear,2021,ok,28.15,0.1898346990,0.3321080804,0.0331564322,b3d29fb404baea03b803827ce64608ce9aad6a5cf8b1caf23ddf54a0c840f55e,eb92d5a70620185a8541c0869763fa5e0405a9cd21a42cab830ab43ffa581789,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\FTSE_revin-DLinear,0
+RUT,DeReFusion,2021,ok,53.3,0.0804423168,0.2157719135,0.0634517446,a94975425bc9af5f952bf13d83f2479b086ce4250d41739ba726264e89331d33,4933d3d2eae5d294e703c11c0dcae97b08c4d1f974c9e47cd6f467d432179d24,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\RUT_DeReFusion,0
+RUT,revin-DLinear,2021,ok,16.08,0.1280101985,0.2890138924,0.1070749015,6e3664e1553efd868e6f641b8c8219690f2351124e89b187c6bccd2d63224f12,4933d3d2eae5d294e703c11c0dcae97b08c4d1f974c9e47cd6f467d432179d24,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\RUT_revin-DLinear,0
+GBPUSD,DeReFusion,2021,ok,59.3,0.0826699138,0.2290194631,47.0160026550,0df6d0fea056306d0f79b3e401da9e81b101320f727bc15f977eec6ba2bfb082,c0f5cebda66209458a3e36de36f8b67e81084b6759f8ab4f4749a8edc693f566,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\GBPUSD_DeReFusion,0
+GBPUSD,revin-DLinear,2021,ok,56.3,0.0895344689,0.2385022640,47.6295394897,beddcb2372cba9338f7d1c3bf274fe07cd44c1d743a53d2b7ad9103480c9fe28,c0f5cebda66209458a3e36de36f8b67e81084b6759f8ab4f4749a8edc693f566,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\GBPUSD_revin-DLinear,0
+AUDUSD,DeReFusion,2021,stall,30.17,,,,,,,0
+AUDUSD,revin-DLinear,2021,stall,15.09,,,,,,,0

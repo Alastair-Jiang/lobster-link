@@ -1,2 +1,11 @@
 tag,model,seed,status,wall_clock_min,metrics_mse,metrics_mae,metrics_mspe,pred_sha256,true_sha256,dir,ingested_orphan
 AAPL,DeReFusion,2021,ok,,0.0843646675,0.2230605185,0.0120858159,cda7693d8edbf88037f2c645ed8f73b408657d87247ebbd5ccdd5b35adb1c102,3b60605d2537bf983f5063d7447ed9d8698ee548185f47bf64ddfe8d11154070,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\AAPL_DeReFusion,1
+AAPL,revin-DLinear,2021,ok,,0.0834380910,0.2241885811,0.0115922866,a6cb22ae31eb0e6d2415f2ef1552de5aaa749130ee1124429cecd2bcbab65b55,3b60605d2537bf983f5063d7447ed9d8698ee548185f47bf64ddfe8d11154070,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\AAPL_revin-DLinear,1
+MSFT,DeReFusion,2021,stall,23.16,,,,,,,0
+MSFT,revin-DLinear,2021,stall,17.11,,,,,,,0
+AMZN,DeReFusion,2021,stall,29.23,,,,,,,0
+AMZN,revin-DLinear,2021,stall,33.21,,,,,,,0
+META,DeReFusion,2021,ok,36.18,0.6665984392,0.6334995031,0.0235519670,8faf8f2f78ea4b9cef7ec30453c5d3265f55da1d6b6d505d454a447fe3e3bb49,d8d002e54a03f161d4413c8421d77b45534a4ad7653418c15ce32db8714e06cc,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\META_DeReFusion,0
+META,revin-DLinear,2021,stall,27.15,,,,,,,0
+TSLA,DeReFusion,2021,ok,43.21,0.1609070152,0.3038788438,0.0718852431,15b94cd030124f4d8f9a5dbb8939f84576004edf66abec4ca9a99fb70530675a,e365bc688c5003b6624817a2eb49df81b50c6b448a284f5bfb9bc6fd72bf4375,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\TSLA_DeReFusion,0
+TSLA,revin-DLinear,2021,stall,23.12,,,,,,,0

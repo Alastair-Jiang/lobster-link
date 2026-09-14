@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-09-14 16:31",
+ "updatedAt": "2026-09-14 21:12",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
  "lastProcessedInboundFile": "thinkbook-lobster/054-to-geng-decisions-014-015-016.md",
  "lastOutboundFile": "geng-lobster/018-t005-rollback-3-to-2-lanes.md",
- "lastCronCheck": "2026-09-14 16:31",
- "lastCronStatus": "3-lane 触发 054 3.1 熔断条件：3-lane 窗口(15:22:27-16:14)内 2 次 stall —— lane1 XOM_revin-DLinear_seed2021（15:44:40 进程树 CPU 静止在 105.6s 达 12min，wall 22.17min）、lane2 GBPUSD_DeReFusion_seed2021（16:01:50 静止在 1558.7s 达 12min，wall 39.3min）。已按约立即回退 2 lane（16:14），双侧数字写进 geng-lobster/018。",
- "lastCronNote": "回退后复核（16:14-16:31）：lane0/2 起 MSFT_DeReFusion_seed2021（16:14:24）、lane1/2 起 FTSE_DeReFusion_seed2021（16:14:30）；lane1 顺手 INGEST 了先前已完成但未记录的 HSI_revin-DLinear_seed2021（16:14:29，mse/mae/mspe=0.1379907876/0.2698225379/49.4645538330，orphan=1）-> ok 将变 4、bad=2。判活（按进程树 CPU）：MSFT +0.91~12s/60s、FTSE +0.98~10.8s/60s，均非零；checkpoint.pth 落盘 16:18:37/16:18:44 -> 判定非 stall。观察（非 stall）：整机 python 总 CPU 仅约 0.2 core（14 核），远低于 011 记录的 2-lane 约 64% 占用，与主人 016 的'CPU 利用率太低'同源，留待 A/B 与后续排查，不作 stall 判定、不改协议。",
- "lastCronResult": "回退后 2-lane 运行正常推进；024 无新增任务；已 push state。未动他人目录、未跑 A/B。",
+ "lastCronCheck": "2026-09-14 21:12",
+ "lastCronStatus": "21:02 巡检：2 lane 存活（lane0 JPM_DeReFusion_seed2021 / lane1 USDCAD_DeReFusion_seed2021）；watchdog(13512)+checkpoint(14248)+lane0/1 外壳均在；无孤儿 run.py（run.py 计数=4 即 2 个 run 的 venv 父子对）。进度 ok=12 bad=8 recorded=20 target=120（seed2021 批次 12/40）；T005-c1 下仍无 BATCH-<seed>-DONE.md，故无批次交付。",
+ "lastCronNote": "【活性实测】90s 采样：python 共 223.6s CPU = 248% 单核（14 核的 18%），52/58 个 pid 有增量 —— 在算，但整体占用远低于 011 记录的 2-lane ~64%。【重要新证据】90s 内出现 58 个不同 python pid（瞬态仅 19 个）→ DataLoader 进程高频生灭，与 018 记录的『内存/DataLoader spawn 风暴』根因吻合；同时 CommitCharge 36.8GB/38.7GB（仅剩 1.9GB），Memory Compression 工作集 1.67GB，物理内存 31.5GB 中空闲 13.4GB —— 提交量近乎吃满，解释了 stall 判据（进程树 CPU 12 分钟无 >2s 增量）频发。未作任何系统改动（遵主人 17:52 裁定）。【stall 明细】lane0: MSFT_DeReFusion/MSFT_revin-DLinear/AMZN_DeReFusion/AMZN_revin-DLinear/META_revin-DLinear/TSLA_revin-DLinear；lane1: AUDUSD_DeReFusion/AUDUSD_revin-DLinear；另有 XOM_revin-DLinear（3-lane 窗口）。均由 lane 自身按 STALL_MIN=12 杀树记 stall 行，Test-Recorded 只认 ok → 会自动进 pass 2/3 重试。",
+ "lastCronResult": "已把 T005-c1 产物（lane*_runs.csv / per_run_manifest.csv / 新增 run 目录）与本 state 提交并 push（网络可用，git ls-remote exit=0）。未触碰他人目录、未改协议、未跑 A/B（主人判『跑完再测』）、未再动系统。",
  "notes": [
   "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
   "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -60,6 +60,7 @@
   "【与 054 的关系】054 3.1 已执行并熔断回退；054 3.2（A/B 提前）被主人裁定覆盖为'跑完再测'（017 1），维持延后。回退细节与双侧数字见 geng-lobster/018。",
   "【回退后复核 16:14-16:31】回退落地后：lane0/2 START MSFT_DeReFusion_seed2021（16:14:24）、lane1/2 START FTSE_DeReFusion_seed2021（16:14:30）；lane1 INGEST HSI_revin-DLinear_seed2021（16:14:29，orphan=1，mse/mae/mspe=0.1379907876/0.2698225379/49.4645538330）——该 run 其实早已完成、只是此前无空闲 lane 记录，故不是丢失，只是晚记。ok 将由 3 变 4。",
   "【判活证据】MSFT worker（pid 14884）与 FTSE worker（pid 37692）在 60s 窗口内有非零 CPU 增长（分别约 +0.9~12s、+1~10.8s）；两个 run 的 checkpoint.pth 落盘于 16:18:37 / 16:18:44 -> 非 stall（沿用'进程树 CPU 判活'标准）。",
-  "【观察·非 stall】整机 python.exe 合计 CPU 仅约 0.2 core（14 核），远低于 011 记录的 2-lane 约 64% 占用；日志 .out 因块缓冲为 0 字节，不能作证据。该低占用与主人 016 'CPU 利用率太低'同源，留待 A/B 与后续排查；不据此改协议、不据此判 stall。"
+  "【观察·非 stall】整机 python.exe 合计 CPU 仅约 0.2 core（14 核），远低于 011 记录的 2-lane 约 64% 占用；日志 .out 因块缓冲为 0 字节，不能作证据。该低占用与主人 016 'CPU 利用率太低'同源，留待 A/B 与后续排查；不据此改协议、不据此判 stall。",
+  "【21:02 巡检·无批次】seed2021 批次仍 12/40，无 BATCH 文件可交付；巡检结论：2 lane 健康在算、stall 主因疑为 commit 吃满（38.7GB 上限剩 1.9GB）+ DataLoader 进程高频生灭（90s 见 58 个 pid）。不动系统（主人 17:52 裁定），仅在后续 A/B 与 054 Q3 里使用该量化。A/B 仍待机器空闲后跑（054 §3.2 被主人覆盖为『跑完再测』）。"
  ]
 }
