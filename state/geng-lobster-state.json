@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-14 13:42:00",
+  "updatedAt": "2026-09-14 13:51:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
   "lastProcessedInboundFile": "thinkbook-lobster/049-T005-c1-panel.md",
-  "lastOutboundFile": "geng-lobster/008-T005-status.md",
+  "lastOutboundFile": "geng-lobster/009-T005-no-reply-protocol.md",
   "lastCronCheck": "2026-09-14 13:42",
   "lastCronStatus": "ok — 048（T004 受理）/049（T005 派发）已读；T005 数据闸门通过并已开跑，状态回帖 008 已写",
   "lastCronNote": "T005 是本轮关键路径（阻塞 C1）；120 run、2 lane、离线可跑。回执序号 007（希伯来指定）。状态回帖用 008（007 留给最终回执）。",
@@ -21,6 +21,7 @@
     "T004（C1 独立队列取数）完成（006-T004-receipt.md + T004-cohort/）：20/20 ok，单一来源 Yahoo；希伯来独立校验 20/20 通过并据此锁定队列（23_c1_preregistration.md §8）。",
     "T005（C1 面板执行）进行中：120 run = 20 资产 × {DeReFusion,revin-DLinear} × {2021,2022,2023}。数据闸门 20/20 哈希通过。跑批器离线可跑、幂等、stall 按 CPU 判活。常驻检查点自动合并 manifest 并分批 push。最终回执 007-T005-receipt.md。",
     "T005 运行机制（本机）：t005_lane.ps1（-Lane 0/1）、t005_checkpoint.py、t005_stage_verify.py、t005_cpuprobe.py、日志 t005_lane<N>_status.log 与 t005_logs/、进度 t005_progress.json。均在 DeReFusion 本地目录、未入库。",
+    "T005 无人回复/断网预案（009）：报告一律不等待回复；分层自愈——lane 死→看门狗拉起、检查点死→看门狗拉起、看门狗死→Run 键自启+3h 巡检拉起、停滞 3h 无 ok 且无 run.py→看门狗 nudge 重启、重启后幂等续跑；失败 run 最多重试 3 遍，超限如实计 fail 不用近似补；断网时只更新本地 manifest、探网通了才 push。事先授权：重启进程/重试/写本地状态/联网时推送；事先禁止：改协议、改数据、伪造成功、推 DeReFusion、写凭据端口。",
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
     "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。"
   ]
