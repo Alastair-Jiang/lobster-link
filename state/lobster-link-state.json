@@ -1,16 +1,15 @@
 {
-  "updatedAt": "2026-09-14 13:15:00",
-  "lastOutboundFile": "thinkbook-lobster/045-T003-f1-recompute.md",
-  "lastCronResult": "owner-requested (2026-09-14 13:06 '都办了'): resumed external tasking after the 2026-09-12 hold; published T002 (egress reachability test on 83JM, read-only) and T003 (independent recomputation of the F1 verdict from the raw _f1 CSV) in thinkbook-lobster/044 and /045, and updated TASK-LEDGER.md (next id T004). Simultaneous publication of T002+T003 recorded as an explicit rule-3 exception authorised by the owner (both zero-risk and mutually independent; T001 was cancelled, not incomplete).",
-  "lastCronStatus": "T002 and T003 published 2026-09-14; awaiting receipts geng-lobster/004-T002-receipt.md and 005-T003-receipt.md",
-  "lastProcessedInboundFile": "geng-lobster/003-standing-task-duty.md",
-  "lastCronCheck": "2026-09-14 13:15:00",
+  "updatedAt": "2026-09-14 13:30:00",
+  "lastOutboundFile": "thinkbook-lobster/047-T004-cohort-acquisition.md",
+  "lastCronResult": "2026-09-14: pulled geng's commit 6c03961 (T002 + T003 receipts). Read both, accepted both. T002: Yahoo reachable on 83JM via its system proxy (HTTP 200, stable 3/3, byte-identical bodies; direct = 429; Stooq = JS challenge both ways => Stooq dropped as an endpoint); full-window single requests returned AAPL 2514 rows, ^GSPC 2514, BTC-USD 3654, matching the existing dataset row counts, so that host can reproduce the same data source. T003: independent recompute verdict SUCCESS with a zero-difference comparison against 21_f1_result.md, plus a dMSE = MSE_N - MSE_L definition self-check (106 rows exactly equal, remainder within 3e-8, float32 storage). Replied in 046 (acceptance + numbering convention: file number != task id, ledger keyed on receipt path), published T004 in 047 (C1 cohort acquisition, single-source Yahoo, 20 pre-named tickers, blocking C1) and updated TASK-LEDGER.md (T002/T003 complete, T004 awaiting receipt, next id T005).",
+  "lastCronStatus": "T004 published 2026-09-14 (blocking C1); awaiting geng-lobster/006-T004-receipt.md",
+  "lastProcessedInboundFile": "geng-lobster/005-T003-receipt.md",
+  "lastCronCheck": "2026-09-14 13:30:00",
   "pollDisabledOnThisHost": true,
-  "note": "ThinkBook runs no automatic lobster poll (job 7de00436 disabled, by owner decision). Interactive sessions only. Standing protocol from 2026-09-12 (compute tasks default to geng as a whole; task ids allocated only here; verify T(n) before publishing T(n+1), else stop and file *-EXCEPTION.md) is unchanged, with the 2026-09-14 owner-authorised exception recorded in TASK-LEDGER.md. Second OpenClaw instance confirmed by the owner on 2026-09-14 as geng / Lenovo 83JM (no discrete GPU, no WSL): CPU-type small panels and independent verification only; the 90-120 C1 framework runs stay on this host. DeReFusion task split recorded in docs/TWO-INSTANCE-SPLIT.md.",
+  "note": "ThinkBook runs no automatic lobster poll (job 7de00436 disabled, by owner decision). Interactive sessions only. Standing protocol unchanged: compute tasks default to geng as a whole; task ids allocated only here; verify T(n) before publishing T(n+1), else stop and file *-EXCEPTION.md. Second OpenClaw instance confirmed by the owner as geng / Lenovo 83JM (no discrete GPU, no WSL): CPU-type work and independent verification; the 90-120 C1 framework runs stay on this host. DeReFusion task split in docs/TWO-INSTANCE-SPLIT.md; C1 pre-registration skeleton in reports/evidence_closure/23_c1_preregistration.md (hashes/provider still slots until the cohort lands).",
   "taskLedger": "thinkbook-lobster/TASK-LEDGER.md",
-  "nextTaskId": "T004",
+  "nextTaskId": "T005",
   "inFlightTasks": [
-    "T002",
-    "T003"
+    "T004"
   ]
 }
