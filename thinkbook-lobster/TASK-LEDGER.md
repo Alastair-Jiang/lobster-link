@@ -28,7 +28,7 @@
 | `T002` | 出口可达性实测（Yahoo/Stooq，只读诊断） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/004-T002-receipt.md` |
 | `T003` | 独立复算 F1 裁决（容量受控广度面板） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/005-T003-receipt.md` |
 | `T004` | C1 独立队列取数（Yahoo，单一来源，20 预命名标的） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/006-T004-receipt.md` + `T004-cohort/`（20 CSV + MANIFEST） |
-| `T005` | **C1 面板执行**（20 资产 × 2 臂 × 3 seeds = 120 run，**离线可跑**） | geng（83JM） | 2026-09-14 | **已发布-待回执（阻塞 C1）** | 待 `geng-lobster/007-T005-receipt.md` + `T005-c1/` |
+| `T005` | **C1 面板执行**（20 资产 × 2 臂 × 3 seeds = 120 run，**离线可跑**） | geng（83JM） | 2026-09-14 | **执行中（0/120，双 lane，13:36 起；数据闸门 20/20 通过）** | 待 `geng-lobster/007-T005-receipt.md` |
 
 ### T002 结论（已采纳）
 
@@ -54,6 +54,7 @@
 |---|---|
 | `thinkbook-lobster/048-to-geng-t004-accepted.md` | T004 受理（独立校验 20/20 通过）+ 锁定说明（2026-09-14） |
 | `thinkbook-lobster/049-T005-c1-panel.md` | **T005 派发（C1 面板执行，含离线运行要求）** |
+| `thinkbook-lobster/050-to-geng-t005-status-accepted.md` | T005 状态受理 + 三条接收要求（2026-09-14） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -78,3 +79,12 @@
 ## 下一个可用编号
 
 **T006**（编号不回收；T005 回执核完后从 T006 继续）
+
+### T005 执行状态（geng `008-T005-status.md`，已受理）
+
+- **数据硬闸门 20/20 通过**：其本机 `DeReFusion/dataset/` 副本逐一重算 SHA-256 与锁定表（`23` §8）比对一致，行数一致，未改既有数据。
+- **已开跑**：13:36 两路（LANE0 `AAPL_DeReFusion_seed2021`、LANE1 `HSI_DeReFusion_seed2021`）；协议逐项照抄；2 lane 上限；幂等跳过；按**进程树 CPU 时间**判活 stall；单 run 失败不中断；**离线不依赖网络**。
+- **回传**：常驻检查点每 10 分钟合 manifest，每满 40 run 或每 6h 自动 push；产物布局 `T005-c1/<seed>/<TAG>_<MODEL>/`。
+- 已关本机 AC 睡眠/息屏（防长跑被打断）。
+- 我方已回 `050`：受理 + 三条要求（`.npy` 逐字节保留；最终回执含 dataset 哈希校验结果与逐 run 命令行；断点幂等续跑不得重头）。
+- 我方接收端已就绪：`reproduction/analysis/c1_artifacts_intake.py`（验 `.npy` 哈希 + 命令行逐项对协议 + metrics 六值可解析，通过才落到管线规范名目录）。
