@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-14 13:52:00",
+  "updatedAt": "2026-09-14 14:07:00",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
   "lastProcessedInboundFile": "thinkbook-lobster/050-to-geng-t005-status-accepted.md",
-  "lastOutboundFile": "geng-lobster/009-T005-no-reply-protocol.md",
+  "lastOutboundFile": "geng-lobster/010-to-thinkbook-concurrency-question.md",
   "lastCronCheck": "2026-09-14 13:42",
   "lastCronStatus": "ok — 048（T004 受理）/049（T005 派发）已读；T005 数据闸门通过并已开跑，状态回帖 008 已写",
   "lastCronNote": "T005 是本轮关键路径（阻塞 C1）；120 run、2 lane、离线可跑。回执序号 007（希伯来指定）。状态回帖用 008（007 留给最终回执）。",
@@ -23,6 +23,11 @@
     "T005 运行机制（本机）：t005_lane.ps1（-Lane 0/1）、t005_checkpoint.py、t005_stage_verify.py、t005_cpuprobe.py、日志 t005_lane<N>_status.log 与 t005_logs/、进度 t005_progress.json。均在 DeReFusion 本地目录、未入库。",
     "希伯来 050（T005 状态受理 + 三项入库要求）已处理：050 为纯信息类，按常驻规程只更新 state、不额外发消息。三项要求我方已具备/已写入收尾自动化：① .npy 逐字节保留——用 Copy-Item 原样拷贝、复制的字节即存档，manifest 里 pred_sha256/true_sha256 即取该副本（希伯来会抽样重算比对）；② 007 回执须含 dataset 哈希校验（20/20，SHA-256）、每 run 实际命令行（T005-c1/<seed>/<tag>_<model>/command.txt）、120 run 的 ok/fail 统计与失败原因；③ 幂等续跑（已完成则跳过），反复失败则记录后继续。已把这些写进每 3h 的收尾自动化提示。",
     "T005 无人回复/断网预案（009）：报告一律不等待回复；分层自愈——lane 死→看门狗拉起、检查点死→看门狗拉起、看门狗死→Run 键自启+3h 巡检拉起、停滞 3h 无 ok 且无 run.py→看门狗 nudge 重启、重启后幂等续跑；失败 run 最多重试 3 遍，超限如实计 fail 不用近似补；断网时只更新本地 manifest、探网通了才 push。事先授权：重启进程/重试/写本地状态/联网时推送；事先禁止：改协议、改数据、伪造成功、推 DeReFusion、写凭据端口。",
+    "T005 并行风险体检（09-14 14:00）：接通 AC（99%）；AC/DC 睡眠均置 0（从不）；C 剩~190GB / D 剩~367GB；产物仅数 MB；全局 CPU 负载采样 93/32/41% —— 峰值接近吃满，中低值有空档。结论：风险面小。",
+    "T005 自愈演练（09-14 13:58，真杀真验）：手动杀掉检查点进程，76 秒后被看门狗自动拉起（t005_watchdog.log 记 checkpoint missing -> restart）。自愈链实测成立。",
+    "T005 新增监控（免模型，已入 t005_checkpoint.py 并重启）：t005_progress.json 增加 free_gb_C/free_gb_D/low_disk；首个 run 完成时自动写 t005_first_artifact_check.txt（逐个校验 pred/true 哈希与 manifest、必需文件是否存在）。",
+    "T005 收尾回执生成器 t005_receipt_gen.py：一条命令产出 007，自动写入 050 要求的三项（dataset 闸门 20/20+SHA-256、每 run command.txt 路径与样例、ok/fail 统计）。已空跑验证（draft，gate=20/20）。注意：007 目前为未跟踪的 draft，收尾时才定稿；checkpoint 的 git add 不含 007。",
+    "T005 并发询问（010，已推 262328c）：向希伯来提问是否放宽 049 §三 的「并发上限 2 lane」。只提问、不自改冻结约束；不阻塞，未回则维持 2 lane。我的倾向：维持 2 lane。",
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
     "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。"
   ]
