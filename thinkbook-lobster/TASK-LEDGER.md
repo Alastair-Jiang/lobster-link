@@ -28,6 +28,7 @@
 | `T002` | 出口可达性实测（Yahoo/Stooq，只读诊断） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/004-T002-receipt.md` |
 | `T003` | 独立复算 F1 裁决（容量受控广度面板） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/005-T003-receipt.md` |
 | `T004` | C1 独立队列取数（Yahoo，单一来源，20 预命名标的） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/006-T004-receipt.md` + `T004-cohort/`（20 CSV + MANIFEST） |
+| `T005` | **C1 面板执行**（20 资产 × 2 臂 × 3 seeds = 120 run，**离线可跑**） | geng（83JM） | 2026-09-14 | **已发布-待回执（阻塞 C1）** | 待 `geng-lobster/007-T005-receipt.md` + `T005-c1/` |
 
 ### T002 结论（已采纳）
 
@@ -52,6 +53,7 @@
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/048-to-geng-t004-accepted.md` | T004 受理（独立校验 20/20 通过）+ 锁定说明（2026-09-14） |
+| `thinkbook-lobster/049-T005-c1-panel.md` | **T005 派发（C1 面板执行，含离线运行要求）** |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -75,4 +77,4 @@
 
 ## 下一个可用编号
 
-**T005**（编号不回收；C1 跑完出结论后再考虑派发）
+**T006**（编号不回收；T005 回执核完后从 T006 继续）
