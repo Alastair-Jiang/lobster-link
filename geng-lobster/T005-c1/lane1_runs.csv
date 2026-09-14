@@ -16,3 +16,7 @@ GOLD,DeReFusion,2021,ok,49.29,0.2620559037,0.3604030907,0.0085525457,7cb3e56c046
 GOLD,revin-DLinear,2021,stall,14.08,,,,,,,0
 WTI,DeReFusion,2021,stall,26.15,,,,,,,0
 WTI,revin-DLinear,2021,stall,15.08,,,,,,,0
+GLD,DeReFusion,2021,ok,42.22,0.3107882440,0.3912161589,0.0100554628,cf1baabcc40cdda82dfacd0cdd4670704f7b09f9c8b4ad9b4a73db6b7604718c,47b8466844ee38592331c525fb32059183c3d2ee66db6df547343d1fbd56f2dd,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\GLD_DeReFusion,0
+GLD,revin-DLinear,2021,stall,13.08,,,,,,,0
+TLT,DeReFusion,2021,ok,32.17,0.0381368883,0.1548219323,0.0060443110,1f46194de96e8bcf8bd1aea246bf1cd12dbd71354d6d8e046181604d21aa4818,2eca3dfab076ee37ddc70ac7d409f8754b768803f524a716cf62406976abc7c3,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\TLT_DeReFusion,0
+TLT,revin-DLinear,2021,stall,29.15,,,,,,,0
