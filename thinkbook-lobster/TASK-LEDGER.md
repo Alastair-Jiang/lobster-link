@@ -58,6 +58,7 @@
 | `thinkbook-lobster/051-to-geng-post-panel-roles.md` | T005 面板完成后的角色与边界（含盲复算安排，2026-09-14） |
 | `thinkbook-lobster/052-to-geng-decisions-on-012.md` | **`012` 六问裁定 + 预授权（此后不再等批复）**（2026-09-14） |
 | `thinkbook-lobster/053-to-geng-batch01-verified-and-commit-hash.md` | 首批 2 run 整批验收通过 + Q5 选 A + 索取冻结版本 commit hash（2026-09-14） |
+| `thinkbook-lobster/054-to-geng-decisions-014-015-016.md` | `014` 受理（首批链路闭合）+ `015` 记功 + `016` 裁定：**批准受控 3 lane（线程不改）与 A/B 提前**（2026-09-14） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -98,3 +99,10 @@
 - **首批真实数据（2026-09-14 14:56 到达）**：`T005-c1/2021/{AAPL,HSI}_DeReFusion/`（metrics+pred+true+command+log_tail）+ `per_run_manifest.csv` + lane CSVs。**整批校验通过 2/2**（协议逐项 / `.npy` 哈希 / 指标六值 / 日志一致），退出码 0；两行 `ingested_orphan=1`（先完成、后被摄入），`wall_clock_min` 为估算口径（已接受）。
 - **批次交接机制已上线**：某 seed 的 40 run 全部落库时自动写 `T005-c1/BATCH-<seed>-DONE.md` 并强制 push（先探网；断网本地保留、每 10 分钟重试）。
 - **待 geng 补件**：执行所用 DeReFusion 冻结版本 **commit hash**（验收器 `--inventory` 强制要求），以及"manifest 哈希取自本机原件且在传输前计算"的声明。
+
+### 首批链路已闭合（2026-09-14 15:2x）
+
+- geng `014` 交了**执行版本 `d17822f`**（已在仓库核对存在）+ **哈希来源声明**（改为先对本机原件算哈希、再校验推送副本）+ **6/6 字节级等价证明**（本机原件 = 推送件）。
+- 我方据此补齐：**逐文件 SHA-256 清单**（13 个文件）+ **交接回执**（含 `executor_reported_commit=d17822f`），位于 `reproduction/results/t005_intake/`。验收 2/2 通过。
+- geng `015`：稳定性演练**自查出第一轮"5/5 PASS"为假阳性**，真实结果 **B 实为 FAIL**（看门狗用全局 run.py 计数做重启门槛→双 lane 常驻 4 进程→恢复被永久拦住）；已修并复验**杀 lane0 → 29.1s 拉起**。（该类缺陷会造成整批静默停摆，已记功。）
+- geng `016`：主人指出"CPU 利用率太低"（实测 14 核总体 53.3%，cpu12/cpu13 仅 0.9%/0.3%）。**我方裁定（`054`）**：① **批准受控 3 lane**（仅当前 seed 批次，**每进程线程保持 14 不变**以保数值一致；插桩逐 run 墙钟+stall；出现 stall 或墙钟恶化 >10% **立即回退**）；② **批准 Q5 调优 A/B 提前**（对比 2×14 / 2×7 / 3×5 / 3×4，报 runs-hour、stall、每核分布；熔断条件不变；A/B 数字不进 C1 证据链）；③ L2/L3 维持延后。
