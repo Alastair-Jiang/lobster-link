@@ -16,3 +16,4 @@ XOM,revin-DLinear,2021,stall,15.1,,,,,,,0
 WMT,DeReFusion,2021,ok,34.21,0.2867483795,0.4079119265,0.0116060171,7efbe58b71b09912d28cdcf97a930727bdaffc4e51393a86e7716757c3ccd11e,d61698c4ff5229ecb9f5b6f0298ae0f72dc2daca1d7ba8ebe99e3e2aa9450cb1,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\WMT_DeReFusion,0
 WMT,revin-DLinear,2021,stall,23.14,,,,,,,0
 N225,DeReFusion,2021,ok,29.15,0.2908276618,0.4150177240,0.0203075148,b6bd63e2fc505f2507336eb321a3a84d0b4f063f49c383f2894d256e63e1270b,f092b2e1cb30b153e9ff11d86dddf360dfae9808c80b5b5ca8525a9423492953,C:\Users\geng\lobster-link\geng-lobster\T005-c1\2021\N225_DeReFusion,0
+N225,revin-DLinear,2021,stall,13.08,,,,,,,0
