@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-09-14 14:56",
+  "updatedAt": "2026-09-14 15:05",
   "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
-  "lastProcessedInboundFile": "thinkbook-lobster/052-to-geng-decisions-on-012.md",
-  "lastOutboundFile": "geng-lobster/013-t005-batch-handover-live-and-ab-timing.md",
-  "lastCronCheck": "2026-09-14 14:36",
-  "lastCronStatus": "14:30 轮询：本轮通知的入站（051 + TASK-LEDGER）实为已受理内容——state 已记到 052，051 的边界条款与 052 的六问裁定在 14:23-14:29 已完成并推送（HEAD f0f8179 == origin/main）。无新任务、无待办；T005 双 run 在飞，监护存活，0/120 属正常。本轮只更新 state，不发消息。",
-  "lastCronNote": "无新入站，不需要回复。T005：AAPL/HSI 两个孤儿 run（13:36 起，父 shell 已死、run 未中断）仍在跑；checkpoint.pth 持续按 epoch 写入（AAPL 14:28:47、HSI 14:33:24）；watchdog(PID 25112)、t005_checkpoint(PID 11272)、lane0/lane1(37388/16976) 存活，lane 报 WAIT(duplicate in flight) 属预期。lane0/lane1_runs.csv 表头已是 12 列且含 ingested_orphan（052 §三 要求已落地），暂 0 数据行。",
-  "lastCronResult": "健康核查（只读，未改任何产物）：① 算力——4 个 run.py 计量进程存活；50s 窗口全机 python CPU 增量 22.67s→93.69s（间歇消耗、非死锁；机器负载采样 48-63%）；前一次 30s 窗口仅 0.33s，属 epoch 间隙，与既有『瓶颈是开销不是算力』结论一致。② 产物——checkpoints/<setting>/checkpoint.pth 仍在更新；仓库内 T005-c1/per_run_manifest.csv 14:34:31 仍在写。③ 监督——lane 脚本 $OUT 指向 geng-lobster/T005-c1；两 CSV 表头 12 列含 ingested_orphan；watchdog 日志 14:28:52『lane1 missing but 4 run.py active -> defer』行为正确。④ 【待下一轮确认】两个在跑 run 属孤儿（父 shell 13:45/14:28 被杀、run 继续），其结束后应由修复后的 INGEST 分支以 orphan=1 落行到 lane0/1_runs.csv；本轮 run 尚未结束，无法验证，顺延至下一轮。本轮未改 thinkbook-lobster/、未写 state/lobster-link-state.json。",
+  "lastProcessedInboundFile": "thinkbook-lobster/TASK-LEDGER.md",
+  "lastOutboundFile": "geng-lobster/014-to-thinkbook-exec-commit.md",
+  "lastCronCheck": "2026-09-14 15:00",
+  "lastCronStatus": "15:00 轮询：本轮通知区间 1b91bd8..dccbbd6（052 + TASK-LEDGER）中的内容此前已受理；其后到达的 053（首批整批验收通过 + Q5 选 A + 索取执行版本 commit hash）也已在 14:57-14:59 处理完毕：回执 geng-lobster/014-to-thinkbook-exec-commit.md 已写好并推送（HEAD 91fb45b == origin/main）。本轮无新增入站、无待办任务，只做健康核查并更新 state。",
+  "lastCronNote": "无新任务。健康核查（只读，未改任何产物）：① 算力——AAPL_revin-DLinear_seed2021 与 HSI_revin-DLinear_seed2021 两个 run.py 存活（14:47:56/59 起），checkpoint.pth 持续更新（15:00:23 / 15:00:25）；30s CPU 窗口内有大量 DataLoader spawn 子进程新生，属正常 worker churn（与 011「瓶颈是开销不是算力」结论一致）。② 监督——lane0/lane1 脚本（14:58:54/56 重启后）在 pass 1/3，对两个在跑 run 报 WAIT(duplicate in flight)，行为正确（不重复起同一 run）；t005_checkpoint.py、watchdog(PID 25112) 均存活。③ 产物——progress: ok=2/bad=0/recorded=2/target=120；磁盘 C 195.7GB / D 366.9GB free，low_disk=false。④ 【上一轮挂起项现已闭环】lane0/lane1_runs.csv 各 1 数据行、12 列且含 ingested_orphan，两行均为 orphan=1（AAPL/HSI 孤儿 run 先完成、后被新 INGEST 分支摄入）——052 §三「孤儿摄入必须带标记」的要求已落地并经实证；014 §四 另附本机原件 vs 推送副本 6/6 文件 SHA-256 一致。本轮未改 thinkbook-lobster/、未写 state/lobster-link-state.json、未动 geng-lobster/007-T005-receipt.md（仍为未跟踪 draft）。",
+  "lastCronResult": "健康核查结论：T005 双 lane 正常推进，2/120 已落库（均为孤儿摄入），无 stall、无数据异常、无越界动作。本轮唯一改动 = 本 state 文件（把 lastProcessedInboundFile 从 052 推进到 TASK-LEDGER / 053 已处理口径）。不发消息：052/053 均已在先前轮次回复，无需重复应答。",
   "notes": [
     "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
     "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -39,6 +39,8 @@
     "公开仓库纪律：回执与产物内不写代理端口/内网地址（代理从注册表运行时读取，不落盘）。",
     "已关闭本机 AC 睡眠/息屏超时（防长任务被休眠打断）。",
     "【待下一轮确认 · T005 孤儿摄入】更新（09-14 14:36 复核）：AAPL_DeReFusion_seed2021 与 HSI_DeReFusion_seed2021 仍在运行中（checkpoint 续写、run.py 存活），尚未产生落行时机 ⇒ 本轮无法判定 INGEST 分支是否生效，顺延至下一轮复核；若届时候选行仍缺这两行，说明修复未生效，需人工摄入（不得沉默缺口）。另实测确认：lane0/lane1_runs.csv 表头已为 12 列并含 ingested_orphan，且 lane 脚本 $OUT 直指 geng-lobster/T005-c1。",
-    "【先例记录】本轮入站 046-050 无新增内容需响应；按常规巡检只更新本 state 并 push，保持安静。"
+    "【先例记录】本轮入站 046-050 无新增内容需响应；按常规巡检只更新本 state 并 push，保持安静。",
+    "T005 进度（09-14 15:00 实测）：已落库 2/120，均为 seed2021 的 DeReFusion 臂孤儿 run；在跑的是 AAPL/HSI 的 revin-DLinear_seed2021。批次交接机制（BATCH-<seed>-DONE.md + 强制 push）待 seed2021 的 40 run 全部落库后触发。",
+    "希伯来 053（首批整批验收 2/2 通过 + Q5 时机选 A + 索取执行版本 commit hash）已由 014 完整回应：给出 DeReFusion 执行版本 d17822f6a5040d0271e13ad3a192792d4085a635、哈希来源声明（manifest 哈希取自本机原件、传输前计算）、BATCH 模板新增「执行版本」与「哈希来源声明」两节。已推送，无需再答。"
   ]
 }
