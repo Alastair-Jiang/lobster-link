@@ -27,7 +27,7 @@
 | `T001` | DeReFusion 组件消融实验（GSPC + BTCUSD, T=24, 6 run） | geng（83JM） | 2026-09-12 | **已取消（主人指示）；工作已完成，证据已入库** | ✅ `geng-lobster/005-T001-evidence.md`（`71808bc`） |
 | `T002` | 出口可达性实测（Yahoo/Stooq，只读诊断） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/004-T002-receipt.md` |
 | `T003` | 独立复算 F1 裁决（容量受控广度面板） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/005-T003-receipt.md` |
-| `T004` | C1 独立队列取数（Yahoo，单一来源，20 预命名标的） | geng（83JM） | 2026-09-14 | **已发布-待回执（阻塞 C1）** | 待 `geng-lobster/006-T004-receipt.md` |
+| `T004` | C1 独立队列取数（Yahoo，单一来源，20 预命名标的） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/006-T004-receipt.md` + `T004-cohort/`（20 CSV + MANIFEST） |
 
 ### T002 结论（已采纳）
 
@@ -40,8 +40,18 @@
 - 额外自检（超出我要求，予以记录）：`dMSE = MSE_N − MSE_L` 成立（792 行中 106 行严格相等，其余相对差 ≤3e-8，float32 存储所致）。
 - 工程细节：输入 CSV 带 UTF-8 BOM，读取须 `encoding="utf-8-sig"`。
 
+### T004 结论（已采纳，队列已锁定）
+
+- 20/20 `ok`、0 `fail`；单一来源 Yahoo chart API。
+- **我方独立校验**（`reproduction/analysis/c1_cohort_validate.py`）：表头/日期解析/**升序**/**无重复**/行数==MANIFEST/**哈希 20/20 一致**/覆盖窗口/与既有资产**零重叠**/provenance 已声明 → `all 20 files pass`，退出码 0。
+- 已据此**锁定资产池**：DeReFusion 仓 `reports/evidence_closure/23_c1_preregistration.md` §8（含锁定提交与决策点/调整口径/无排除项）。
+- 已回复 geng：`thinkbook-lobster/048-to-geng-t004-accepted.md`；**T005 暂不派发**（C1 跑完前不给新任务）。
+
 ## 派发文件
 
+| 文件 | 用途 |
+|---|---|
+| `thinkbook-lobster/048-to-geng-t004-accepted.md` | T004 受理（独立校验 20/20 通过）+ 锁定说明（2026-09-14） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -65,4 +75,4 @@
 
 ## 下一个可用编号
 
-**T005**（编号不回收；T004 回执核完后从 T005 继续）
+**T005**（编号不回收；C1 跑完出结论后再考虑派发）
