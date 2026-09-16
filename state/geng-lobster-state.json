@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-09-16 17:50",
+ "updatedAt": "2026-09-16 23:4x",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
  "lastProcessedInboundFile": "thinkbook-lobster/055-to-geng-approve-liveness-fix.md",
- "lastOutboundFile": "geng-lobster/056-to-thinkbook-liveness-criterion-live.md",
- "lastCronCheck": "2026-09-16 17:50",
- "lastCronStatus": "17:50 巡检：希伯来 055（17:05，批准判活改『产物推进』方案 (a) + 安排重跑）已处理并由 056 回执（17:16）；判活修正已生效在跑（lane0 17:12:42 / lane1 17:12:47 用新判据起跑，2 lane x 60 任务切片）。验证：t005_liveness.ps1 在位且被 t005_lane.ps1 dot-source（第 25 行）、监视循环调 Update-T005Liveness（第 188 行）；两个重跑单元正在推进（MSFT_revin-DLinear_seed2021 checkpoint 17:46:33、AUDUSD_revin-DLinear_seed2021 17:44:53，均在数分钟内新写；60s 树 CPU +0.25/+0.33）；t005_kill_events.csv 尚无 kill 行（新判据下未再误杀）。watchdog/checkpoint/lane 外壳均存活。进度 89/120（ok=58 = DeReFusion 45 + revin 13；stall=31，全部 revin）。",
- "lastCronNote": "本轮无新增入站（thinkbook 最新=055，已处理）。只读巡检 + 本 state 更新 + push；未改他人目录、未跑 A/B（仍按主人裁定等 120 完成 + 机器空闲）、未改协议/数据/超参。待跑 = 31 个 stall 幂等重跑 + 31 个未跑 = 62 个 run（055 一.4 口径）。",
- "lastCronResult": "无新任务；仅更新本 state 并 push。新判据下无 kill、无回退动作、未触碰已产出的 89 行 manifest 与 .npy。",
+ "lastOutboundFile": "geng-lobster/057-to-thinkbook-suspend-kill-and-guard.md",
+ "lastCronCheck": "2026-09-16 23:24",
+ "lastCronStatus": "23:24 巡检：发现事故——看门狗 17:12:47 自死(6h 空档)、20:42:25 系统休眠致时钟冻结至 23:21:09，战役死亡约 2h38m；靠 23:21 人为登录触发 Run 键才复活(23:22:56 看门狗起，23:23 拉 checkpoint+lane0/1)。在飞无产物的 XOM_revin_seed2021 / HSI_revin_seed2022 被弃并按幂等重跑。已修：① 交流待机/休眠超时=0 + 交直流合盖=不动作(验证 0x0)；② 新增 t005_guard.ps1(150s 单实例循环,缺则拉起看门狗,每小时 heartbeat)pid=42136 已在跑；③ 新增 HKCU Run 值 T005Guard(原 T005Watchdog 未改)。schtasks /create 被本机 exec 策略拒(0xFFFFFFFF)→守护走 Run 键+独立进程。进度 recorded=89/120(ok=67, stall=22 全在 revin)。剩余 31=9 未跑+22 stall 重跑；stall 无产物→由 lane 幂等逻辑并入正常 pass，非独立一轮。ETA 约 09-17 07:00-09:00。存活：watchdog(3644)+guard(42136)+checkpoint(19084)+lane0(40652)+lane1(39600)；两 run 进程树非零 CPU 增长。",
+ "lastCronNote": "⚠️ 巡检任务自身今天 3 次失败(LLM DNS lookup failed)，失败告警也发不出(Channel is required，本机未配 channel)。教训已写入 workspace/memory/2026-09-16.md：Run 键=仅登录时刻；必须有持续存活的守护层；电源设置每轮复核。",
+ "lastCronResult": "本轮为事故轮：完成 (1)-(3) 存活核对、(5) 自愈处置(禁睡+守护进程+Run 键)、(4) 无新批次(2021/2022 均已交接并有 .handed_over 标记，2023 未满 40)。已提交 057 说明并推送 T005-c1 产物/lane CSV/manifest。未碰协议/数据/超参/窗口/切分/指标；未跑 A/B。",
  "notes": [
   "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
   "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -85,6 +85,10 @@
   "已由 geng-lobster/056 回执（17:16）：方案 (a) 实现并生效——新增 t005_liveness.ps1（判据独立成模块：New/Update-T005Liveness、Get-T005ArtifactMtime、Get-TreeCpu、Write-T005KillEvent），t005_lane.ps1 改为 dot-source；CPU 判据从『与上一次瞬时采样比』改为『与历史峰值比』（消掉 worker 生灭导致的塌陷）；产物判据取 results/checkpoints 下任一文件最新 mtime；kill 事件记入 t005_kill_events.csv（含 action=kept-alive-artifact-flat-cpu-moved 的放过行，使被杀集合与被放过集合都可对账）。单测 7/7 PASS；现场复现了 020 的失真机制（同一棵树两次采样 265.5s→248.0s）。",
   "17:48 本轮验证（实测）：lane0/lane1 均在跑（LANE0/2 start 17:12:42、LANE1/2 17:12:47，各 60 任务），重跑单元 MSFT_revin-DLinear_seed2021 / AUDUSD_revin-DLinear_seed2021 的 checkpoint 分别在 17:46:33 / 17:44:53 新写（数分钟内），60s 树 CPU +0.25 / +0.33 → 新判据下判定在算、未被杀；t005_kill_events.csv 尚无 kill 行。t005_liveness.ps1 已被 t005_lane.ps1 dot-source（第 25 行）且监视循环调 Update-T005Liveness（第 188 行）。watchdog + checkpoint + 两条 lane 外壳均存活。",
   "进度与账（17:41 自检 + 17:48 复核）：recorded=89/120（ok=58 = DeReFusion 45 + revin 13；stall=31，全部在基线臂 revin-DLinear）。待跑 = 31 个 stall 幂等重跑 + 31 个未跑 = 62 个 run。两臂离各 60 尚有距离，终值在 007 给出。",
-  "代价交代（056 已如实写）：让新判据立刻生效需重启 lane，丢弃了当时在飞且尚无产物落盘的 AAPL_revin-DLinear_seed2023（约 29 min）与 GBPUSD_DeReFusion_seed2023（约 43 min）；按幂等口径将重跑，除重跑外无额外破坏。已在 052 预授权（可自主重启 lane）范围内。"
+  "代价交代（056 已如实写）：让新判据立刻生效需重启 lane，丢弃了当时在飞且尚无产物落盘的 AAPL_revin-DLinear_seed2023（约 29 min）与 GBPUSD_DeReFusion_seed2023（约 43 min）；按幂等口径将重跑，除重跑外无额外破坏。已在 052 预授权（可自主重启 lane）范围内。",
+  "【事故·09-16 休眠致死 2h38m】17:12:47 看门狗重启完两条 lane 后自死，日志空档 6h(至 23:22:56)；20:42:25 系统进入睡眠(Id 42)，Kernel-General 记录时钟自 20:42:27 冻结、23:21:09 变更 → 战役死亡 2h38m；23:21 人为登录触发 HKCU Run 键才把看门狗拉回。被弃在飞单元：XOM_revin-DLinear_seed2021(20:23:22 起)、HSI_revin-DLinear_seed2022(20:30:28 起)，均无产物 → 幂等重跑(23:23:03 / 23:24:00)。17:14:38-17:27:27 与 17:27:28-17:37:20 另有两次待机/睡眠进出。",
+  "【事故修复·已落地】① powercfg：交流待机超时=0、交流休眠超时=0、交流合盖=不动作(验证索引 0x00000000) —— 注意 09-14 曾设过禁睡，09-16 仍睡了，说明『设过』≠『生效』，以后每轮验索引值。② 新增 DeReFusion/t005_guard.ps1：命名互斥量 Local\\T005Guard 单实例，每 150s 检查 t005_watchdog.ps1，缺则 Start-Process 拉起，每小时 heartbeat 写 t005_guard.log；已起 pid=42136(23:31:09)。③ 新增 HKCU\\...\\Run\\T005Guard(值=t005_guard.ps1)，原 T005Watchdog 值未改(先保留，回滚只需删新值)。④ schtasks /create 被本机 exec 策略静默拒绝(0xFFFFFFFF、无输出) → 不建计划任务、不提权，守护走 Run 键+独立进程循环。",
+  "【口径提醒·供 007 如实写】22 个 stall 行无产物落盘，lane 的 Test-Recorded/幂等跳过会把它们并入正常 pass 1/3 重跑，而不是『120 跑完后单独一轮』。结果等价(重跑对象相同)，已在 057 告知希伯来；若其坚持严格分轮，再按令调整。",
+  "【账单·巡检任务自身】本 3h 巡检任务今天 3 次执行失败(lastRunError=LLM request failed: DNS lookup for the provider endpoint failed)，且失败告警投递失败(lastFailureNotificationDeliveryError=Channel is required)。即若干窗口实际无巡检、你也没收到失败通知。对战役无影响(lane/看门狗不依赖模型)。"
  ]
 }
