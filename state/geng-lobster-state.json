@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-09-15 00:00",
+ "updatedAt": "2026-09-16 10:02",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
  "lastProcessedInboundFile": "dongxujiu/035-ack-guiyu-034-dsh-inventory.md",
- "lastOutboundFile": "geng-lobster/018-t005-rollback-3-to-2-lanes.md",
- "lastCronCheck": "2026-09-15 00:00",
- "lastCronStatus": "00:00 巡检：2 lane 存活（lane0 N225_revin-DLinear_seed2021 / lane1 GLD_DeReFusion_seed2021）；watchdog(13512)+checkpoint(14248)+lane0/1 外壳(40256/37228) 均在；在飞 run=2、无孤儿、无 WAIT 循环。进度 ok=17 bad=16 recorded=33 target=120（seed2021 批次 17/40）；T005-c1 下仍无 BATCH-<seed>-DONE.md，故无批次交付。磁盘 C 193.6GB / D 365.7GB free，low_disk=false。",
- "lastCronNote": "本轮无新任务：入站仅 dongxujiu/035（董学九对 guiyu-lobster/034 DSH 插件清单的极简 ack，收件人是桂鱼的龙虾、正文未点名 geng）⇒ 纯信息类，按规程只更新本 state，不发消息、不写回执。运行侧：2 lane 健康在算，lane0 23:49 INGEST N225_DeReFusion_seed2021（wall=29.15min，mse/mae/mspe=0.2908276618/0.4150177240/0.0203075148），lane1 23:52 判 WTI_revin-DLinear_seed2021 stall（cpu stuck 582.4s/12min，wall=15.08min）后 kill 树并按幂等转 GLD_DeReFusion_seed2021。bad=16 全为 stall（MSFT/AMZN/META/TSLA/JPM/XOM/WMT/AUDUSD/USDCAD/GOLD/WTI 各臂），均由 lane 自身 STALL_MIN=12 判据记行，Test-Recorded 只认 ok → 自动进 pass 2/3 重试。未作任何系统改动（遵主人 17:52 裁定）。",
- "lastCronResult": "pull 前工作树脏（在飞 lane CSV+manifest 未提交、5 个 run 目录未跟踪），git pull --rebase 被拒 ⇒ 先只提交 3 个已跟踪 CSV（50e5a3e；不含 007 draft、不含未跟踪 run 目录），再 rebase 吸收 0664406 成功（exit=0），随后 push 本 state。未触碰他人目录、未改协议、未跑 A/B（主人判『跑完再测』）、未再动系统。",
+ "lastOutboundFile": "geng-lobster/T005-c1/BATCH-2022-DONE.md",
+ "lastCronCheck": "2026-09-16 10:02",
+ "lastCronStatus": "10:02 巡检：2 lane 存活在算（lane0 MSFT_revin-DLinear_seed2021 / lane1 AUDUSD_revin-DLinear_seed2021，均为 3 遍上限内的重试），进程树 CPU 实测 45s 采样 +39.6s/+42.1s（≈0.88/0.94 核）；watchdog(10:00 自启)+checkpoint+lane 外壳均在，Run 键 T005Watchdog 在位；10:00 机器重启后自愈成功。进度 recorded=87/120（ok=54 / stall=33，全部 stall 在基线臂 revin-DLinear，已由 020 上报）。【本轮动作】发现 seed2022 批次产物（BATCH-2022-DONE.md + 2022/ 24 个 run 目录 + 2023/ 5 个 + 两条 CSV + manifest）此前只写了本地交接标记、从未 push；本轮已 commit 6af7486 并推送（5212388..6af7486 HEAD -> main），并向主人报告批次 2022 交付（24 ok / 16 stall 记录）。磁盘 C 202.1GB / D 366.9GB free，low_disk=false。",
+ "lastCronNote": "本轮无新入站任务。判定依据：BATCH-<seed>-DONE.md 由 t005_checkpoint.py 自动生成，标记文件本身不等于“已报告”，故以 git 是否已推 + 对话是否已报为准；seed2022 交接此前两者皆缺，本轮补齐。007 回执仍为未跟踪 draft（ok+fail 未达 120，收尾时才定稿）。a/b 仍按主人 15:35 裁定『跑完再测』延后。",
+ "lastCronResult": "T005 巡检：无需人工干预。补推 seed2022 批次产物 commit 6af7486；未触碰他人目录、未改协议/数据、未动系统、未跑 A/B。",
  "notes": [
   "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
   "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -64,6 +64,7 @@
   "【21:02 巡检·无批次】seed2021 批次仍 12/40，无 BATCH 文件可交付；巡检结论：2 lane 健康在算、stall 主因疑为 commit 吃满（38.7GB 上限剩 1.9GB）+ DataLoader 进程高频生灭（90s 见 58 个 pid）。不动系统（主人 17:52 裁定），仅在后续 A/B 与 054 Q3 里使用该量化。A/B 仍待机器空闲后跑（054 §3.2 被主人覆盖为『跑完再测』）。",
   "【本轮入站 dongxujiu/035】类型：回复·极简 ack（董学九 → 桂鱼的龙虾）。内容：034 DSH 插件清单（22 个，web profile）已读并归档备查；声明仍是 daft 线程不插话；对齐信息为 Mac Mini 侧同用 OpenRouter GLM 5.3 Flash（模型层一致，后续可对表 prompt/工具链）；记下 pnpm allowBuilds 与 Windows rename 残留两个踩坑。收件人不是 geng、正文无点名 geng 的请求 ⇒ 按规程纯信息类，只更新本 state，不发消息、不写回执。",
   "【操作记录 09-15 00:00】脏工作树下的 pull 顺序（可复用）：先 git add 只加自己已跟踪的产物路径并 commit，再 git pull --rebase，最后 push。原因：rebase 要求干净树，而 checkpoint 常驻会持续写 lane CSV；用 stash 会与 checkpoint 自身的 git add/commit 抢锁且可能把在写文件卷进提交。未跟踪的 run 目录与 007 draft 一律不进这次提交（前者由 checkpoint 在 run 完整落盘后并入 manifest，后者按既定安排收尾时才定稿）。",
-  "T005 进度（09-15 00:00 实测）：recorded=33/120（ok=17、bad=16 全为 stall），seed2021 批次 17/40；无 BATCH 文件。整机 python 占用仍远低于 011 记录的 2-lane ~64%，与 018『commit 吃满 + DataLoader spawn 风暴』一致，量化留待后续 A/B 与 054 Q3。"
+  "T005 进度（09-15 00:00 实测）：recorded=33/120（ok=17、bad=16 全为 stall），seed2021 批次 17/40；无 BATCH 文件。整机 python 占用仍远低于 011 记录的 2-lane ~64%，与 018『commit 吃满 + DataLoader spawn 风暴』一致，量化留待后续 A/B 与 054 Q3。",
+  "【批次交付去重口径（09-16 10:02 定）】BATCH-<seed>-DONE.md 与 .batch_<seed>_handed_over 均由 t005_checkpoint.py 自动落盘，只能证明“该 seed 的 40 run 已全部记录”，不能证明产物已 push、也不能证明已向主人报告。报告去重以两条同时成立为准：① git 远端已含该批产物/交接单；② 对话里确有对应报告。教训：09-15 22:28 生成的 seed2022 交接单因未 push 而一直被忽略，直到 09-16 10:02 巡检才发现。"
  ]
 }
