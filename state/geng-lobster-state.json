@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-09-16 10:36",
+ "updatedAt": "2026-09-16 17:25",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
- "lastProcessedInboundFile": "dongxujiu/035-ack-guiyu-034-dsh-inventory.md",
- "lastOutboundFile": "geng-lobster/T005-c1/BATCH-2022-DONE.md",
- "lastCronCheck": "2026-09-16 10:36",
- "lastCronStatus": "10:36 巡检：2 lane 存活在算（lane0 AMZN_revin-DLinear_seed2021 / lane1 USDCAD_revin-DLinear_seed2021，均于 10:24 起跑，为各自单元的重试遍次）；watchdog/checkpoint/lane 外壳均在，10:00 重启后自愈正常。进度 recorded=87/120（ok=54 / stall=33，全部在基线臂 revin-DLinear）。上一对单元 MSFT_revin/AUDUSD_revin 于 10:24:40/47 被判 STALL（cpu stuck 76.5s/84.1s for 12min；wall≈24.2min）后杀树重试。本轮新增证据：被杀单元临死前 1-5 分钟仍在写 checkpoint（MSFT 10:19:48 / AUDUSD 10:23:19）→ 继续支持 020 的『误杀』结论；60s 内出现 52 个独立 python PID（DataLoader spawn 风暴），lane 的 Get-TreeCpu 为瞬时采样 → 短命 worker 的 CPU 永不计入。本轮不动判活逻辑（054 4『异常只报告不自修』+ 020 四既定默认）。",
- "lastCronNote": "本轮无新入站（thinkbook 最新仍是 09-14 的 054；dongxujiu/035 已处理）。只读巡检 + 本 state 更新 + push，未改他人目录、未跑 A/B（按主人 15:35 裁定『跑完再测』延后）、未改 harness/数据/协议。未决请求仍在（020 请求批准判活口径改为『产物推进』；018 4 请求解禁 L2 的 DataLoader persistent_workers）——两项都含默认动作=不改，故不阻塞。",
- "lastCronResult": "无新任务；仅更新本 state 并 push。无 stall 回退动作、无 A/B 数据产生、未触碰 C1 产物。",
+ "lastProcessedInboundFile": "thinkbook-lobster/055-to-geng-approve-liveness-fix.md",
+ "lastOutboundFile": "geng-lobster/056-to-thinkbook-liveness-criterion-live.md",
+ "lastCronCheck": "2026-09-16 17:25",
+ "lastCronStatus": "本轮入站 055（批准判活口径修正 (a)）+ TASK-LEDGER 更新。已按 055 §一 实际落地并自检验证：新增 t005_liveness.ps1（判据=产物无推进 AND 进程树 CPU 无增长，同时持续 STALL_MIN=12min 才杀；CPU 改为峰值跟踪），t005_lane.ps1 改为 dot-source 该模块（旧脚本留档 .bak-20260916-1720）；逐次 kill 事件写入 DeReFusion/t005_kill_events.csv。验证：判据单测 t005_liveness_test.ps1 7/7 PASS；现场两次 70s 采样复现 020 失真机制（同树 CPU 可涨可跌，如 GBPUSD 265.5→248.0s、AAPL_revin 48.0→23.8s）；新判据下复测两个曾被误杀单元 MSFT_revin/AUDUSD_revin 均 kill=False 且在写新 checkpoint。部署：重启 2 lane，watchdog 30s 内自愈拉起；新判据生效时点 lane0 17:12:42 / lane1 17:12:47（起跑 MSFT_revin-DLinear_seed2021 / AUDUSD_revin-DLinear_seed2021）。代价（已如实写入 056）：重启丢弃在飞的 AAPL_revin-DLinear_seed2023（≈29min）与 GBPUSD_DeReFusion_seed2023（≈43min），二者无产物落盘、按幂等重跑。进度 recorded=89/120（ok=58：DeReFusion 45 + revin 13；stall=31 全在 revin-DLinear）；未记录 31；待跑=31 重跑 + 31 补跑 = 62 run。",
+ "lastCronNote": "055 属【任务式请求】，故本轮不是只回一句收到：已在本机把判活修正做出来、跑单测、做现场对照、重启部署并复测。只改『何时杀树』；协议/数据/种子/超参/窗口/切分/指标一字未动；stall 检测未取消（只换判据）；未改 STALL_MIN。另：055 §五已记下 007 必须写清的账（逐 run 终态+kill 判据值+重试次数 / 重跑前后对照 / 修正生效时点 / 总墙钟与两臂完成数）。018 §3 的两处确认与 §二节奏（维持 2 lane、3 lane 交给 A/B、A/B 仍在 120 后）已读，无需动作。",
+ "lastCronResult": "已落地 055 批准的判活修正并生效（含单测 7/7、现场对照、重启自愈复测）；已写 056 回执并推送。未改他人目录、未写 state/lobster-link-state.json、未改协议/数据、未跑 A/B（仍按主人『跑完再测』延后）。",
  "notes": [
   "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
   "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -71,6 +71,15 @@
   "【判活失真机制（实测）】60s 窗口内出现的独立 python.exe PID 达 52 个（DataLoader spawn 风暴；Windows 无 fork，每个 worker 重新 import torch）。t005_lane.ps1 的 Get-TreeCpu 是每 60s 一次的**瞬时采样**（对当前进程树取 TotalProcessorTime 之和），采样间隙生灭的 worker CPU 永不计入 → 『12 分钟增量 ≤2s』被误触发。环境侧：提交内存 39.8GB vs 物理 31.5GB（126%，仍在换页），与 018 的根因结论一致。结论：CPU 增量判活在本机 spawn 风暴下不可靠，应以**产物推进**（checkpoint mtime / results 写入）为判活口径。",
   "本轮不擅自改判活逻辑：054 4 明示『异常只报告不自修』，且 020 四已写明默认动作=不改。已产出 87 行 manifest 与 .npy 一字未动。",
   "未决请求（均含默认动作、不阻塞）：① 020：批准把判活口径改为『产物推进』（二选一：换口径 / 基线臂放宽 STALL_MIN 并要求两次连续判据）；② 018 4：解禁 L2（DataLoader persistent_workers 或降 num_workers）以消掉 spawn 风暴与换页。若不批准，收尾时 007 必须如实写『基线臂因判活误杀而缺失约 33/60』——这会是 C1 的重大局限。",
-  "待办（顺延）：① 120 跑完后按主人裁定的『单独重试基线臂 stall』——但**必须先有 ① 批准的新判活口径**，否则重试轮会原样复现同一批误杀、不可能收敛；② 收尾后机器空闲时先 A/B dry-run（单 run 2 epochs）端到端验证，再跑四配置正式测量（2x14/2x7/3x5/3x4），A/B 数字不得进 C1 证据链；③ 007 回执定稿（ok+fail=120 时）；④ 清理 ABDIAG_* 残留。"
+  "待办（顺延）：① 120 跑完后按主人裁定的『单独重试基线臂 stall』——但**必须先有 ① 批准的新判活口径**，否则重试轮会原样复现同一批误杀、不可能收敛；② 收尾后机器空闲时先 A/B dry-run（单 run 2 epochs）端到端验证，再跑四配置正式测量（2x14/2x7/3x5/3x4），A/B 数字不得进 C1 证据链；③ 007 回执定稿（ok+fail=120 时）；④ 清理 ABDIAG_* 残留。",
+  "【055 已执行·判活口径修正落地】新判据 = 『产物无推进（results/ 与 checkpoints/ 下任一文件 mtime 不前进）AND 进程树 CPU 无增长』同时持续 12 分钟后才杀树；任一信号在动则不杀。真挂死两信号都不动，仍会被抓。",
+  "【实现】新增 DeReFusion/t005_liveness.ps1（New/Update-T005Liveness、Get-T005ArtifactMtime、Get-TreeCpu、Write-T005KillEvent）；t005_lane.ps1 dot-source 之，监视循环换用新判定；旧脚本留档 t005_lane.ps1.bak-20260916-1720。",
+  "【CPU 判据的关键修正】不再与上一次瞬时采样比较，而与历史峰值比较 —— 采样间隙生灭的 DataLoader worker 的 CPU 不再丢失。这正是 020 失真机制的根因（实测同树 70s 两次采样：GBPUSD 265.5→248.0s 与 248.2→267.3s；AAPL_revin 35.3→47.8s 与 48.0→23.8s，可涨可跌）。",
+  "【验证证据】① t005_liveness_test.ps1 7/7 PASS（含 B 用例=『产物推进+CPU 读数平』40 分钟不杀，即 020 误杀形态；D 用例=峰值保留）。② 新判据下复测 MSFT_revin-DLinear_seed2021（CPU 35.5→41.8s，产物 10:19:48→17:14:22）与 AUDUSD_revin-DLinear_seed2021（CPU 37.2→58.6s）均 kill=False。③ 语法自检 0 error + 隔离 lane DryRun 空跑通过。",
+  "【部署与生效时点】t005_restart_lanes.ps1（脚本文件执行，避免自我匹配事故；排除自身 $PID）杀掉旧 lane 树 → watchdog 30s 内自愈拉起两条 lane → 起跑 MSFT_revin-DLinear_seed2021（lane0 17:12:42）/ AUDUSD_revin-DLinear_seed2021（lane1 17:12:47）。watchdog 与 checkpoint 均存活。",
+  "【代价·如实记录】重启丢弃在飞的两个 run：AAPL_revin-DLinear_seed2023（16:44:33 起，≈29min）、GBPUSD_DeReFusion_seed2023（16:30:38 起，≈43min）；二者当时无产物落盘，按幂等口径重跑。备选是等旧进程自行退出（可能数小时且期间继续误杀），按 052 预授权选择立即重启。",
+  "【kill 事件台账】DeReFusion/t005_kill_events.csv：ts,task,lane,cpu_peak_s,cpu_age_min,art_age_min,art_mtime,action,criterion。除 kill 外，『产物没动但 CPU 在动→放过』也记一行（action=kept-alive-artifact-flat-cpu-moved），使被杀集合与被放过集合都可对账。该文件在本机、不入库，内容将在 007 汇总。",
+  "【进度 09-16 17:11】recorded=89/120：ok=58（DeReFusion 45 / revin-DLinear 13）、stall=31（全部 revin-DLinear，均为旧判据误杀）。未记录 31（DeReFusion 15 / revin 16）。待跑 = 31 重跑 + 31 补跑 = 62 run。",
+  "【未决/未做】未改 STALL_MIN（仍 12min）；未自行放宽基线臂；未改协议/数据/种子/超参/窗口/切分/指标。若新判据下仍出现误杀，照实记录判据值并回报，不擅自再放宽。018 §4 请求解禁 L2（DataLoader persistent_workers）仍在未决，含默认动作=不改。"
  ]
 }
