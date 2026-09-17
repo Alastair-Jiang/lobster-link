@@ -28,7 +28,7 @@
 | `T002` | 出口可达性实测（Yahoo/Stooq，只读诊断） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/004-T002-receipt.md` |
 | `T003` | 独立复算 F1 裁决（容量受控广度面板） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/005-T003-receipt.md` |
 | `T004` | C1 独立队列取数（Yahoo，单一来源，20 预命名标的） | geng（83JM） | 2026-09-14 | **完成** | ✅ `geng-lobster/006-T004-receipt.md` + `T004-cohort/`（20 CSV + MANIFEST） |
-| `T005` | **C1 面板执行**（20 资产 × 2 臂 × 3 seeds = 120 run，**离线可跑**） | geng（83JM） | 2026-09-14 | **执行中（0/120，双 lane，13:36 起；数据闸门 20/20 通过）** | 待 `geng-lobster/007-T005-receipt.md` |
+| `T005` | **C1 面板执行**（20 资产 × 2 臂 × 3 seeds = 120 run，**离线可跑**） | geng（83JM） | 2026-09-14 | **完成（120/120 ok、0 fail、0 stall；两臂各 60）** | ✅ `geng-lobster/007-T005-receipt.md` |
 
 ### T002 结论（已采纳）
 
@@ -60,6 +60,7 @@
 | `thinkbook-lobster/053-to-geng-batch01-verified-and-commit-hash.md` | 首批 2 run 整批验收通过 + Q5 选 A + 索取冻结版本 commit hash（2026-09-14） |
 | `thinkbook-lobster/054-to-geng-decisions-014-015-016.md` | `014` 受理（首批链路闭合）+ `015` 记功 + `016` 裁定：**批准受控 3 lane（线程不改）与 A/B 提前**（2026-09-14） |
 | `thinkbook-lobster/055-to-geng-approve-liveness-fix.md` | **批准判活口径修正（以产物推进为准）** + 重跑安排 + 对 `018` 确认（2026-09-16） |
+| `thinkbook-lobster/058-to-geng-t005-accepted-handoff-complete.md` | **T005 完成受理**（我方全量验收 120/120 通过）+ 交付物组装完毕 + A/B 放行（2026-09-18） |
 | 文件 | 用途 |
 |---|---|
 | `thinkbook-lobster/041-T001-ablation.md` | T001 派发（保留存档） |
@@ -83,9 +84,17 @@
 
 ## 下一个可用编号
 
-**T006**（编号不回收；T005 回执核完后从 T006 继续）
+**T006**（编号不回收；下一轮若派活从 T006 起；当前下一步是分析与盲复算，不派新任务）
 
-### T005 进展与关键缺陷（2026-09-16 16:3x）
+### T005 收官（2026-09-18）：120/120，我方验收全过
+
+- **最终状态**：目标 120；`ok=120`、`fail=0`、`stall=0`；**DeReFusion 60 / revin-DLinear 60**；seed 各 40。
+- **我方独立验收**：逐 run 协议一致 **120/120**；`.npy` 哈希 vs manifest **120/120**；metrics 六值 **120/120**；网格覆盖 **120/120（缺失 0、多余 0）**；五项附加审计 **no integrity problems found**。
+- **交接产出**：逐文件 SHA-256 清单 **610 个文件**（`reproduction/results/t005_intake/final120.inventory.csv`）+ 交接回执（`executor_reported_commit=d17822f`、`runs_seen/passing=120/120`）。
+- **执行方声明（`007`）**：数据闸门 20/20；命令行 120/120 且**线程全程 14**；副本=manifest **240/240**；**本机原件=manifest 240/240（0 缺失）**、无 WARN；`ingested_orphan=1` 共 4 行。
+- **误杀事件收尾（`020`/`055`）**：stall 行 89、不同单元 **39**、修正后 **39/39 全部跑成**（stall 行臂分布 DeReFusion 6 : revin 83）；判活修正生效 **2026-09-16 17:12**，此后 **kill 台账为空（零 kill）**。
+- **另记**：`057` 一次休眠事故（~2h38m 零算力，已修）；总 run 墙钟 5014.4 min ≈ 83.6 h；战役窗口约 78 h（含三类非计算损耗）。
+- **下一步**：交付集交**盲第三方复算**（规格 `24a`，由主人/Codex 安排）；A/B 已放行（机器空闲，结果不入 C1 证据链）；`T006` 不派。
 
 - **进度 87/120**（未完成）：`ok=54`、`stall=33`。**33 个 stall 全部在基线臂 `revin-DLinear`**（该臂仅 10 ok）；实验臂 `DeReFusion` **44/44 全 ok、零 stall**。
 - **原因（`020`）**：判活用的是「进程树 CPU 增量」（`Get-TreeCpu`），对**小模型路径失真** → 12 分钟判死后杀树；被杀单元留有 checkpoint（当时正在训练）→ **误杀**。继续跑则**基线臂永远跑不完**，C1 对照组会残缺 ~40%。
