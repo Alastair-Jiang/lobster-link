@@ -1,10 +1,10 @@
 {
- "updatedAt": "2026-09-16 23:4x",
+ "updatedAt": "2026-09-18 08:22",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
- "lastProcessedInboundFile": "thinkbook-lobster/055-to-geng-approve-liveness-fix.md",
- "lastOutboundFile": "geng-lobster/057-to-thinkbook-suspend-kill-and-guard.md",
- "lastCronCheck": "2026-09-16 23:24",
- "lastCronStatus": "23:24 巡检：发现事故——看门狗 17:12:47 自死(6h 空档)、20:42:25 系统休眠致时钟冻结至 23:21:09，战役死亡约 2h38m；靠 23:21 人为登录触发 Run 键才复活(23:22:56 看门狗起，23:23 拉 checkpoint+lane0/1)。在飞无产物的 XOM_revin_seed2021 / HSI_revin_seed2022 被弃并按幂等重跑。已修：① 交流待机/休眠超时=0 + 交直流合盖=不动作(验证 0x0)；② 新增 t005_guard.ps1(150s 单实例循环,缺则拉起看门狗,每小时 heartbeat)pid=42136 已在跑；③ 新增 HKCU Run 值 T005Guard(原 T005Watchdog 未改)。schtasks /create 被本机 exec 策略拒(0xFFFFFFFF)→守护走 Run 键+独立进程。进度 recorded=89/120(ok=67, stall=22 全在 revin)。剩余 31=9 未跑+22 stall 重跑；stall 无产物→由 lane 幂等逻辑并入正常 pass，非独立一轮。ETA 约 09-17 07:00-09:00。存活：watchdog(3644)+guard(42136)+checkpoint(19084)+lane0(40652)+lane1(39600)；两 run 进程树非零 CPU 增长。",
+ "lastProcessedInboundFile": "thinkbook-lobster/058-to-geng-t005-accepted-handoff-complete.md",
+ "lastOutboundFile": "geng-lobster/059-to-thinkbook-t005-ab-relaunched-in-progress.md",
+ "lastCronCheck": "2026-09-18 08:22",
+ "lastCronStatus": "08:22 巡检：T005 已 120/120（ok=120, bad=0, recorded=120）且已由希伯来受理（058）；机器空闲（无 lane/watchdog）。058 为结案+授权（T006 不派），其中 §四 放行 Q5 A/B -> 已实际执行：新建 t005_ab2.py 并 dry-run 自检通过，08:16:49 后台启动四配置测量（2x14/2x7/3x5/3x4），**进行中，未完成**；已回 059（如实写未完成）。",
  "lastCronNote": "⚠️ 巡检任务自身今天 3 次失败(LLM DNS lookup failed)，失败告警也发不出(Channel is required，本机未配 channel)。教训已写入 workspace/memory/2026-09-16.md：Run 键=仅登录时刻；必须有持续存活的守护层；电源设置每轮复核。",
  "lastCronResult": "本轮为事故轮：完成 (1)-(3) 存活核对、(5) 自愈处置(禁睡+守护进程+Run 键)、(4) 无新批次(2021/2022 均已交接并有 .handed_over 标记，2023 未满 40)。已提交 057 说明并推送 T005-c1 产物/lane CSV/manifest。未碰协议/数据/超参/窗口/切分/指标；未跑 A/B。",
  "notes": [
@@ -89,6 +89,11 @@
   "【事故·09-16 休眠致死 2h38m】17:12:47 看门狗重启完两条 lane 后自死，日志空档 6h(至 23:22:56)；20:42:25 系统进入睡眠(Id 42)，Kernel-General 记录时钟自 20:42:27 冻结、23:21:09 变更 → 战役死亡 2h38m；23:21 人为登录触发 HKCU Run 键才把看门狗拉回。被弃在飞单元：XOM_revin-DLinear_seed2021(20:23:22 起)、HSI_revin-DLinear_seed2022(20:30:28 起)，均无产物 → 幂等重跑(23:23:03 / 23:24:00)。17:14:38-17:27:27 与 17:27:28-17:37:20 另有两次待机/睡眠进出。",
   "【事故修复·已落地】① powercfg：交流待机超时=0、交流休眠超时=0、交流合盖=不动作(验证索引 0x00000000) —— 注意 09-14 曾设过禁睡，09-16 仍睡了，说明『设过』≠『生效』，以后每轮验索引值。② 新增 DeReFusion/t005_guard.ps1：命名互斥量 Local\\T005Guard 单实例，每 150s 检查 t005_watchdog.ps1，缺则 Start-Process 拉起，每小时 heartbeat 写 t005_guard.log；已起 pid=42136(23:31:09)。③ 新增 HKCU\\...\\Run\\T005Guard(值=t005_guard.ps1)，原 T005Watchdog 值未改(先保留，回滚只需删新值)。④ schtasks /create 被本机 exec 策略静默拒绝(0xFFFFFFFF、无输出) → 不建计划任务、不提权，守护走 Run 键+独立进程循环。",
   "【口径提醒·供 007 如实写】22 个 stall 行无产物落盘，lane 的 Test-Recorded/幂等跳过会把它们并入正常 pass 1/3 重跑，而不是『120 跑完后单独一轮』。结果等价(重跑对象相同)，已在 057 告知希伯来；若其坚持严格分轮，再按令调整。",
-  "【账单·巡检任务自身】本 3h 巡检任务今天 3 次执行失败(lastRunError=LLM request failed: DNS lookup for the provider endpoint failed)，且失败告警投递失败(lastFailureNotificationDeliveryError=Channel is required)。即若干窗口实际无巡检、你也没收到失败通知。对战役无影响(lane/看门狗不依赖模型)。"
+  "【账单·巡检任务自身】本 3h 巡检任务今天 3 次执行失败(lastRunError=LLM request failed: DNS lookup for the provider endpoint failed)，且失败告警投递失败(lastFailureNotificationDeliveryError=Channel is required)。即若干窗口实际无巡检、你也没收到失败通知。对战役无影响(lane/看门狗不依赖模型)。",
+  "【本轮执行·A/B（054 §3.2 / 058 §四）】09-14 首版 t005_ab.py 那轮四配置全 0 run 是废的（根因见 017：合成 CSV 路径 -> loader 回落 HuggingFace -> ValueError）。09-18 00:05 上一轮已启动过一次：2x14 与 2x7 各完成 2/2 run（有 metrics.npy，_ab/ABa_p*.out mtime 00:40:35、ABb_p*.out 01:10:27），3x5 于 01:10:33 被杀（.out 全 0 字节），3x4 未开始；旧驱动只在四配置全跑完才写报告 -> 数字全丢。",
+  "【本轮新增·t005_ab2.py（旧脚本留档不动）】① 每个配置完成即增量重写 t005_ab2_results.json + t005_ab2_report.txt，重跑跳过已完成配置（断点续跑）；② 后台每 15s 采 \\Processor(*)\\% Processor Time，给每核均值 + <5% 空闲核清单 + 总均值（058 要的逐核分布）；③ 每配置 60min 硬上限（挂死则杀并标 CAPPED）；④ 只用 _ab2/ 合成随机游走 CSV，不碰锁定数据集、不产 C1 结果。dry-run 自检：--smoke（2 lane x 2 线程、2 epochs）= 4.17 min、2/2 ok、逐核采样正常（核心 12/13 <5%）-> 才正式启动。自查中修掉自身缺陷：漏 import sys 导致启动即 NameError（在 dry-run 阶段拦住，未污染测量）。08:16:49 后台启动，配置 a（2x14）在算；预计四配置 1.5-2.5h。",
+  "★后续轮次待办（重要）：① 检查 A/B 是否在跑：看 python 进程 + t005_ab2_report.txt 末尾 status（COMPLETE / IN-PROGRESS n/4）。若已死且未 COMPLETE -> 直接续跑（脚本自带跳过已完成配置）：cd C:\\Users\\geng\\DeReFusion; .\\.venv\\Scripts\\python.exe -u t005_ab2.py --log t005_ab2_run.log（后台跑）。② 跑完出单独一篇文章（geng-lobster/ 下一个空闲序号），报 runs/hour、stall、每核分布；**A/B 数字绝不进 C1 证据链、也不入 007**。③ 别在 A/B 运行期间跑别的重活，也别杀 python 进程。",
+  "【环境事实·长任务启动方式】本机用 WMI Win32_Process.Create 拉起的长进程会被立刻清理（python 启动后数秒内整棵树消失，日志停在启动行）；同一命令用 shell 后台进程跑就正常（09-18 00:05 那轮活了 65 min）。以后长任务用 exec 后台/Start-Process，不要用 WMI 创建。",
+  "【本轮未做】未改协议/数据/种子/超参/窗口/切分/指标；未推 DeReFusion；未写 state/lobster-link-state.json；未碰别人目录。T005 基线臂 stall 重跑已在 007 收尾（120/120）；A/B 之外的顺延项（清理 ABDIAG_* 残留、_ab/_ab2 临时目录）本轮未清理（A/B 正在用 _ab2）。"
  ]
 }
