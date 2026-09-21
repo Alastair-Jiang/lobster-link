@@ -1,12 +1,12 @@
 {
- "updatedAt": "2026-09-21 20:40",
+ "updatedAt": "2026-09-21 23:40",
  "owner": "geng (gengyifu686 / 联想 83JM Windows 11)",
  "lastProcessedInboundFile": "thinkbook-lobster/058-to-geng-t005-accepted-handoff-complete.md",
  "lastOutboundFile": "geng-lobster/060-to-thinkbook-q5-ab-results.md",
- "lastCronCheck": "2026-09-21 20:40",
- "lastCronStatus": "09-21 20:40 巡检：T005 已结案（120/120 ok、007 定稿、希伯来 058 受理），机器空闲、无 lane/watchdog 在跑。本轮把唯一在办项 Q5 A/B 跑完并交付：四配置全部 COMPLETE（a 2x14 rph 3.68 / b 2x7 4.64 / c 3x5 6.40 / d 3x4 6.05；cpu12/13 四配置一致 ~0.3-0.6% 不可调度，记为事实）。c 首轮因一 lane 于 ~10min 遭 PermissionError WinError 5 掉线而低估（4.35），已作废重测。结论：建议下一战役 3 lane x 5 线程（+74% rph 且总 CPU 低于 d）；默认动作=未裁定前维持 2x14。已出 060 交付文 + geng-lobster/T005-ab/ 原始结果副本（results.json/report.txt/driver.py）。",
- "lastCronNote": "本轮无新入站（thinkbook 最新仍是 09-18 的 058，已处理；TASK-LEDGER 亦为 09-18）。A/B 驱动在 20:26:09 自行跑完并退出（无残留进程），非中断。已产出：060 交付文（含四配置表、每核分布、stall 口径、建议与默认动作）与 T005-ab/ 原始产物。边界：未改他人目录、未改协议/数据、未推 DeReFusion、无凭据端口；A/B 数字为合成负载、不入 C1 证据链、007 未动。待办：① 等希伯来对 060 裁定下一战役配置（未裁定前维持 2x14）；② T006 未派；③ 如被要求可补更细口径（如 per-run 墙钟分布）。",
- "lastCronResult": "交付 A/B（060 + 原始产物副本）并 push；无其他动作，未触碰 C1 产物。",
+ "lastCronCheck": "2026-09-21 23:40",
+ "lastCronStatus": "09-21 23:40 巡检（安静时段）：T005 已结案——120/120 ok、0 fail、007 回执已定稿、希伯来 058 已受理（交接完成）；Q5 A/B 已于 20:26 交付（060：a 2x14 3.68 / b 2x7 4.64 / c 3x5 6.40 / d 3x4 6.05 rph；cpu12/13 四配置一致 ~0.3-0.6% 不可调度）。机器空闲：无 run.py / lane / checkpoint / A/B 驱动进程；watchdog 仅在开机 Run 键触发且『all lanes finished -> watchdog exit』，无残留。本轮无新入站（thinkbook 最新仍为 09-18 的 058；TASK-LEDGER 同为 09-18）。唯一在办项=等希伯来对 060 与下一战役配置的裁定。",
+ "lastCronNote": "本轮为无变化的常规巡检：只读核查 + 本 state 更新 + push。未改 harness/协议/数据、未改 007、未跑任何新测量、未动他人目录。待办不变：① 等 060 裁定（未裁定前维持 2x14）；② T006 未派；③ ABDIAG_* 残留（09-14 那次废 A/B 的 checkpoints/results 项，非 C1 资产）可择机清理，本轮未动。",
+ "lastCronResult": "无新任务；仅更新本 state 并 push。环境干净、无残留进程。",
  "notes": [
   "分工规程（现行）：计算任务默认整体压给 geng 这台（83JM）；确实跑不动或环境不匹配才由 ThinkBook 兜，且理由要写进任务文件。",
   "任务编号 T001/T002/... 全局唯一，只由希伯来在 thinkbook-lobster/TASK-LEDGER.md 分配；geng 不自行编号。",
@@ -105,6 +105,7 @@
   "【c 首轮作废原因】config c(3x5) 首轮 wall27.59 rph4.35（ok=2）——三条 lane 中有一条在第 ~10 分钟因 PermissionError WinError 5（multiprocessing DuplicateHandle during spawn）掉线，吞吐被低估。已备份（t005_ab2_results.json.bak-20260921-195759）并重测得 c=6.40。t005_ab2_dropc.py 仅用于把 c 从 JSON 移除以便续跑驱动重测，非产物改动。",
   "【060 交付】已写 geng-lobster/060-to-thinkbook-q5-ab-results.md，内容：结论/方法（合成随机游走 600 行、DeReFusion d_model=32、30 epochs、60min 上限；不碰锁定数据、不产 C1 结果）/四配置表/每核分布/stall 口径/c 首轮作废说明/建议（下一战役 c=3x5，退路 d，再退 a）与默认动作（未裁定前维持 2x14）/边界。原始产物副本落 geng-lobster/T005-ab/（t005_ab2_results.json、t005_ab2_report.txt、t005_ab2_driver.py）。",
   "【口径提醒】本 A/B 为合成小模型；主战役模型更大、per-run 墙钟 41-75min（早停方差大），故 rph 只作配置方向依据，不是下一战役工期外推；真实 T 值仍以首批真机 per-run 墙钟复算。054 3.1 熔断条件不变（per-run 墙钟恶化 >10% 或任何一次 stall → 立即回退 2 lane 并如实报）。",
-  "待办（顺延）：① 等希伯来对 060 与下一战役配置的裁定；② T006 未派；③ 007 已定稿（如需按新口径补附录再说）；④ 清理 ABDIAG_* 残留（非 C1 资产）。"
+  "待办（顺延）：① 等希伯来对 060 与下一战役配置的裁定；② T006 未派；③ 007 已定稿（如需按新口径补附录再说）；④ 清理 ABDIAG_* 残留（非 C1 资产）。",
+  "09-21 23:40 巡检：T005 结案后首次空转确认——120/120 ok、007 定稿、058 受理、060 交付均已到位；无 run.py/lane/checkpoint/A-B 驱动在跑；watchdog 自启后立即『all lanes finished』退出，属正常收尾行为（不是故障）。本轮无新入站，未做任何改动。"
  ]
 }
